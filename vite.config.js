@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/max-char-length-calculator/', // Replace 'my-vue-app' with your actual repository name
   plugins: [
     vue(),
   ],
