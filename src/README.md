@@ -8,7 +8,7 @@ The average character width is calculated by taking the average of the widths of
 
 To complete the calculation, users need to input:
 
-- The dataset as a JSON file (Check [src/assets/sample-files/en-us.json](src/assets/sample-files/en-us.json) for an example of the expected format)
+- The dataset as a JSON file (Check [my sample file](https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json) to understand the expected format
     - Alternatively, they can use a generic dataset (but only English will work as a source language)
 - The width of the UI element in pixels (after subtracting any margins and paddings)
 - The width of each character in pixels
