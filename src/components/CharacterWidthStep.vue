@@ -1,11 +1,12 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import { useCalculatorStore } from '../stores/calculator';
 
 const store = useCalculatorStore();
-const sortField = ref<SortField>('char');
-const sortDirection = ref<SortDirection>('asc');
+const sortField = ref('char');
+const sortDirection = ref('asc');
+const error = ref('');
 
 const characterSummary = computed(() => {
   return store.characterData.map(char => ({
@@ -14,7 +15,11 @@ const characterSummary = computed(() => {
   }));
 });
 
-const handleSort = (field: SortField) => {
+const allWidthsEntered = computed(() => {
+  return store.characterData.every(char => char.width !== undefined && char.width > 0);
+});
+
+const handleSort = (field) => {
   if (sortField.value === field) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
   } else {
@@ -24,12 +29,17 @@ const handleSort = (field: SortField) => {
   store.sortCharacterData(store.characterData, field, sortDirection.value);
 };
 
-const getSortIcon = (field: SortField) => {
+const getSortIcon = (field) => {
   if (sortField.value !== field) return '↕️';
   return sortDirection.value === 'asc' ? '↑' : '↓';
 };
 
 const handleNext = () => {
+  if (!allWidthsEntered.value) {
+    error.value = 'Please enter widths for all characters before proceeding';
+    return;
+  }
+  error.value = '';
   store.nextStep();
 };
 
@@ -37,7 +47,7 @@ const handlePrevious = () => {
   store.previousStep();
 };
 
-const updateCharacterWidth = (char: string, width: string) => {
+const updateCharacterWidth = (char, width) => {
   const numWidth = parseFloat(width);
   if (!isNaN(numWidth)) {
     const charData = store.characterData.find(c => c.char === char);
@@ -53,6 +63,11 @@ const updateCharacterWidth = (char: string, width: string) => {
     <h2 class="text-2xl font-bold mb-4">Character Widths</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-6">
+        <!-- Error Message -->
+        <div v-if="error" class="p-4 bg-red-50 rounded-lg">
+          <p class="text-red-800">{{ error }}</p>
+        </div>
+
         <!-- Character Summary with Width Inputs -->
         <div>
           <h3 class="text-lg font-semibold mb-4">Enter Character Widths</h3>
@@ -93,7 +108,7 @@ const updateCharacterWidth = (char: string, width: string) => {
                       type="number"
                       step="0.1"
                       :value="char.width"
-                      @input="(e) => updateCharacterWidth(char.char, (e.target as HTMLInputElement).value)"
+                      @input="(e) => updateCharacterWidth(char.char, e.target.value)"
                       class="w-24 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </td>
