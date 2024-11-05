@@ -1,12 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
+import ErrorMessage from './ui/ErrorMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
 
 const store = useCalculatorStore();
 const sortField = ref('char');
 const sortDirection = ref('asc');
 const error = ref('');
+const invalidWidths = ref(new Set());
 
 const characterSummary = computed(() => {
   return store.characterData.map(char => ({
@@ -35,10 +37,18 @@ const getSortIcon = (field) => {
 };
 
 const handleNext = () => {
-  if (!allWidthsEntered.value) {
-    error.value = 'Please enter widths for all characters before proceeding';
+  invalidWidths.value.clear();
+  
+  const invalid = store.characterData
+    .filter(char => char.width === undefined || char.width <= 0)
+    .map(char => char.char);
+    
+  if (invalid.length > 0) {
+    invalidWidths.value = new Set(invalid);
+    error.value = 'Please enter valid widths for all characters before proceeding';
     return;
   }
+  
   error.value = '';
   store.nextStep();
 };
@@ -53,6 +63,7 @@ const updateCharacterWidth = (char, width) => {
     const charData = store.characterData.find(c => c.char === char);
     if (charData) {
       charData.width = numWidth;
+      invalidWidths.value.delete(char);
     }
   }
 };
@@ -63,11 +74,6 @@ const updateCharacterWidth = (char, width) => {
     <h2 class="text-2xl font-bold mb-4">Character Widths</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-6">
-        <!-- Error Message -->
-        <div v-if="error" class="p-4 bg-red-50 rounded-lg">
-          <p class="text-red-800">{{ error }}</p>
-        </div>
-
         <!-- Character Summary with Width Inputs -->
         <div>
           <h3 class="text-lg font-semibold mb-4">Enter Character Widths</h3>
@@ -109,7 +115,12 @@ const updateCharacterWidth = (char, width) => {
                       step="0.1"
                       :value="char.width"
                       @input="(e) => updateCharacterWidth(char.char, e.target.value)"
-                      class="w-24 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      :class="[
+                        'w-24 px-2 py-1 border rounded-md focus:outline-none focus:ring-2',
+                        invalidWidths.has(char.char)
+                          ? 'border-red-300 focus:ring-red-500 bg-red-50'
+                          : 'border-gray-300 focus:ring-blue-500'
+                      ]"
                     />
                   </td>
                 </tr>
@@ -119,6 +130,7 @@ const updateCharacterWidth = (char, width) => {
         </div>
       </div>
 
+      <ErrorMessage :message="error" />
       <StepNavigation
         @next="handleNext"
         @previous="handlePrevious"

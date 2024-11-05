@@ -2,13 +2,16 @@
 import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import Toggle from './ui/Toggle.vue';
+import ErrorMessage from './ui/ErrorMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
+import type { LanguageData } from '../types';
 
 const store = useCalculatorStore();
 const selectedLanguageCode = ref('');
 const currentFile = ref<File | null>(null);
 const error = ref('');
+const highlightConfig = ref(false);
 
 // Placeholder expansion rates
 const genericRates = [
@@ -27,13 +30,18 @@ const availableLanguages = computed(() => {
 });
 
 const handleNext = () => {
-  if (!store.localization.enabled || 
-      (store.localization.useGenericRates && store.localization.genericExpansionRate > 0) ||
-      (!store.localization.useGenericRates && store.localization.languages.length > 0)) {
-    store.nextStep();
-  } else {
-    error.value = 'Please complete the localization configuration before proceeding.';
+  highlightConfig.value = false;
+  
+  if (store.localization.enabled && 
+      !((store.localization.useGenericRates && store.localization.genericExpansionRate > 0) ||
+        (!store.localization.useGenericRates && store.localization.languages.length > 0))) {
+    error.value = 'Please complete the localization configuration before proceeding';
+    highlightConfig.value = true;
+    return;
   }
+  
+  error.value = '';
+  store.nextStep();
 };
 
 const handlePrevious = () => {
@@ -45,6 +53,7 @@ const handleFileChange = async (event: Event) => {
   if (input.files && input.files[0] && selectedLanguageCode.value) {
     currentFile.value = input.files[0];
     error.value = '';
+    highlightConfig.value = false;
     
     try {
       const text = await currentFile.value.text();
@@ -62,12 +71,12 @@ const handleFileChange = async (event: Event) => {
       store.processDataset(dataset, language);
       store.addLocalizationLanguage(language);
       
-      // Reset selection
       selectedLanguageCode.value = '';
       currentFile.value = null;
       if (input.value) input.value = '';
     } catch (e) {
-      error.value = 'Invalid JSON file. Please check the file format.';
+      error.value = 'Invalid JSON file. Please check the file format';
+      highlightConfig.value = true;
     }
   }
 };
@@ -88,7 +97,7 @@ const handleFileChange = async (event: Event) => {
 
         <template v-if="store.localization.enabled">
           <!-- Generic vs Custom Rates -->
-          <div class="space-y-4">
+          <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
             <div>
               <label class="flex items-center space-x-2">
                 <input
@@ -116,7 +125,7 @@ const handleFileChange = async (event: Event) => {
           <!-- Generic Rates Selection -->
           <div v-if="store.localization.useGenericRates" class="space-y-4">
             <h3 class="text-lg font-semibold">Select Expansion Rate</h3>
-            <div class="space-y-2">
+            <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-2">
               <div v-for="rate in genericRates" :key="rate.value" class="flex items-center">
                 <label class="flex items-center space-x-2">
                   <input
@@ -156,7 +165,7 @@ const handleFileChange = async (event: Event) => {
             </div>
 
             <!-- Add New Language -->
-            <div class="space-y-4">
+            <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                   Select Language
@@ -195,12 +204,9 @@ const handleFileChange = async (event: Event) => {
             </div>
           </div>
         </template>
-
-        <div v-if="error" class="p-4 bg-red-50 rounded-lg">
-          <p class="text-red-800">{{ error }}</p>
-        </div>
       </div>
 
+      <ErrorMessage :message="error" />
       <StepNavigation
         @next="handleNext"
         @previous="handlePrevious"
