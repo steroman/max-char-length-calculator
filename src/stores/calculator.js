@@ -16,6 +16,7 @@ export const useCalculatorStore = defineStore('calculator', {
       ignoreNumbers: false,
       ignoreSymbols: false,
       ignoreSpaces: false,
+      reduceByTenPercent: true,
     },
     characterData: [],
     mainLanguage: null,
@@ -28,6 +29,7 @@ export const useCalculatorStore = defineStore('calculator', {
     },
     maxCharLength: 0,
     adjustedMaxCharLength: null,
+    reducedMaxCharLength: null,
   }),
 
   actions: {
@@ -98,7 +100,6 @@ export const useCalculatorStore = defineStore('calculator', {
       if (forLanguage) {
         forLanguage.characterData = characterData;
         forLanguage.averageLength = calculateAverageLength(dataset);
-        
         const mainAvgLength = calculateAverageLength(this.rawDataset);
         forLanguage.expansionRate = forLanguage.averageLength / mainAvgLength;
       } else {
@@ -149,6 +150,13 @@ export const useCalculatorStore = defineStore('calculator', {
       }, 0);
 
       this.maxCharLength = Math.floor(this.elementWidth / totalFrequencyWidth);
+      
+      // Apply 10% reduction if enabled
+      if (this.datasetConfig.reduceByTenPercent) {
+        this.reducedMaxCharLength = Math.floor(this.maxCharLength * 0.9);
+      } else {
+        this.reducedMaxCharLength = null;
+      }
 
       if (this.localization.enabled) {
         let expansionRate;
@@ -162,7 +170,8 @@ export const useCalculatorStore = defineStore('calculator', {
           );
         }
 
-        this.adjustedMaxCharLength = Math.floor(this.maxCharLength / expansionRate);
+        const baseLength = this.reducedMaxCharLength || this.maxCharLength;
+        this.adjustedMaxCharLength = Math.floor(baseLength / expansionRate);
       } else {
         this.adjustedMaxCharLength = null;
       }

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import { useCalculatorStore } from '../stores/calculator';
@@ -17,13 +17,29 @@ const handlePrevious = () => {
   store.previousStep();
 };
 
+const getMaxLengthDisplay = computed(() => {
+  const parts = [];
+
+  if (store.adjustedMaxCharLength !== null) {
+    parts.push(`Adjusted for localization: ${store.adjustedMaxCharLength} characters`);
+  }
+
+  if (store.datasetConfig.reduceByTenPercent && store.reducedMaxCharLength !== null) {
+    parts.push(`With 10% reduction: ${store.reducedMaxCharLength} characters`);
+  }
+
+  parts.push(`Base length: ${store.maxCharLength} characters`);
+
+  return parts;
+});
+
 const getLanguageWithHighestExpansion = computed(() => {
   if (!store.localization.enabled || store.localization.useGenericRates) {
     return null;
   }
   return store.localization.languages.reduce((highest, current) => {
     return !highest || current.expansionRate > highest.expansionRate ? current : highest;
-  }, null as LanguageData | null);
+  }, null);
 });
 </script>
 
@@ -42,11 +58,8 @@ const getLanguageWithHighestExpansion = computed(() => {
         <div class="p-4 bg-blue-50 rounded-lg">
           <h3 class="text-lg font-semibold text-blue-900 mb-2">Maximum Character Length</h3>
           <div class="space-y-2">
-            <p class="text-blue-800" v-if="store.adjustedMaxCharLength !== null">
-              Adjusted for localization: <span class="font-bold">{{ store.adjustedMaxCharLength }}</span> characters
-            </p>
-            <p class="text-blue-800">
-              Without adjustment: <span class="font-bold">{{ store.maxCharLength }}</span> characters
+            <p v-for="(text, index) in getMaxLengthDisplay" :key="index" class="text-blue-800">
+              {{ text }}
             </p>
           </div>
         </div>
