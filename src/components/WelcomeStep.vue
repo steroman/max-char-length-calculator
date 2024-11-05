@@ -30,18 +30,15 @@ const handleNext = () => {
     </div>
   </div>
   <div class="max-w-2xl mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-xl font-bold mb-4">Disclaimer</h2>
-      <p class="mb-4">
-        A few things to know before using this tool:
+      <h2 class="text-xs font-bold mb-4">Disclaimer</h2>
+      <p class="mb-4 text-xs">
+        A few things to know before using this app:
 </p>
-      <ul class="list-disc ml-6 mb-6">
-          <li> I'm not storing any of your data—Everything runs in the browser and is reset every time you refresh the page</li>
-          <li> This is a passion project and it's far from perfect. If you spot any issues or have any suggestions, you can report them <a class="text-blue-500" href="https://github.com/steroman/max-char-length-calculator/issues/new/choose">directly on GitHub</a></li>
-          <li> The project is also open-source. You can find the code on <a class="text-blue-500" href="https://github.com/steroman/max-char-length-calculator">GitHub</a></li>
-          <li> Code produced by AI (ChatGPT + Bolt)</li>
+      <ul class="list-disc ml-6 mb-6 text-xs">
+          <li> None of your data is stored. Everything runs in the browser and is reset every time you refresh the page</li>
+          <li> The is an open-source project. The code is available on <a class="text-blue-500" href="https://github.com/steroman/max-char-length-calculator" target="_blank">GitHub</a></li>
+          <li> Created using <a href="https://bolt.new" target="_blank" class="text-blue-500">Bolt</a></li>
         </ul>
-      <p class="mb-4">Based on my article <a class="text-blue-500" href="https://uxcontent.com/a-formula-for-defining-maximum-character-lengths/">A formula for defining maximum character lengths</a>.</p>
-</div>
+      <p class="mb-4 text-xs">Based on my article <a class="text-blue-500" href="https://uxcontent.com/a-formula-for-defining-maximum-character-lengths/" target="_blank">A formula for defining maximum character lengths</a>.</p>
     </div>
 </template>
