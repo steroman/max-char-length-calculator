@@ -8,26 +8,51 @@ import { useCalculatorStore } from '../stores/calculator';
 const store = useCalculatorStore();
 const width = ref('');
 const error = ref('');
+const touched = ref(false);
+
+const validateWidth = (value) => {
+  if (value === '') {
+    return 'Please enter a width value';
+  }
+  
+  const numWidth = Number(value);
+  if (isNaN(numWidth)) {
+    return 'Please enter a valid number';
+  }
+  
+  if (numWidth <= 0) {
+    return numWidth === 0 ? 'Width cannot be zero' : 'Width must be greater than 0';
+  }
+  
+  return '';
+};
 
 const handleNext = () => {
-  if (!width.value) {
-    error.value = 'Please enter a width value';
+  const validationError = validateWidth(width.value);
+  if (validationError) {
+    error.value = validationError;
     return;
   }
-
-  const numWidth = Number(width.value);
-  if (numWidth <= 0) {
-    error.value = 'Width must be greater than 0';
-    return;
-  }
-
-  error.value = '';
-  store.setElementWidth(numWidth);
+  
+  store.setElementWidth(Number(width.value));
   store.nextStep();
 };
 
 const handlePrevious = () => {
   store.previousStep();
+};
+
+const handleInput = (event) => {
+  const value = event.target.value;
+  width.value = value;
+  if (touched.value) {
+    error.value = validateWidth(value);
+  }
+};
+
+const handleBlur = () => {
+  touched.value = true;
+  error.value = validateWidth(width.value);
 };
 </script>
 
@@ -42,7 +67,9 @@ const handlePrevious = () => {
         <input
           id="width"
           type="number"
-          v-model="width"
+          :value="width"
+          @input="handleInput"
+          @blur="handleBlur"
           min="1"
           :class="[
             'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',
