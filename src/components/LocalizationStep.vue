@@ -6,7 +6,6 @@ import ErrorMessage from './ui/ErrorMessage.vue';
 import WarningMessage from './ui/WarningMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
-import type { LanguageData } from '../types';
 
 const store = useCalculatorStore();
 const selectedLanguageCode = ref('');
