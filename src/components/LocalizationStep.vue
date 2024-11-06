@@ -12,6 +12,8 @@ const selectedLanguageCode = ref('');
 const currentFile = ref(null);
 const error = ref('');
 const highlightConfig = ref(false);
+const highlightLanguage = ref(false);
+const highlightDataset = ref(false);
 
 const genericRates = [
   { label: '+15% (to Russian)', value: 1.15 },
@@ -35,13 +37,29 @@ const availableLanguages = computed(() => {
 
 const handleNext = () => {
   highlightConfig.value = false;
+  highlightLanguage.value = false;
+  highlightDataset.value = false;
   
-  if (store.localization.enabled && 
-      !((store.localization.useGenericRates && store.localization.genericExpansionRate > 0) ||
-        (!store.localization.useGenericRates && store.localization.languages.length > 0))) {
-    error.value = 'Please complete the localization configuration before proceeding';
-    highlightConfig.value = true;
-    return;
+  if (store.localization.enabled) {
+    if (store.localization.useGenericRates && !store.localization.genericExpansionRate) {
+      error.value = 'Please select an expansion rate';
+      highlightConfig.value = true;
+      return;
+    }
+    
+    if (!store.localization.useGenericRates && store.localization.languages.length === 0) {
+      if (!selectedLanguageCode.value) {
+        error.value = 'Please select a language';
+        highlightLanguage.value = true;
+        return;
+      }
+      
+      if (!currentFile.value) {
+        error.value = 'Please upload a JSON file';
+        highlightDataset.value = true;
+        return;
+      }
+    }
   }
   
   error.value = '';
@@ -57,7 +75,7 @@ const handleFileChange = async (event) => {
   if (input.files && input.files[0] && selectedLanguageCode.value) {
     currentFile.value = input.files[0];
     error.value = '';
-    highlightConfig.value = false;
+    highlightDataset.value = false;
     
     try {
       const text = await currentFile.value.text();
@@ -80,7 +98,9 @@ const handleFileChange = async (event) => {
       if (input.value) input.value = '';
     } catch (e) {
       error.value = 'Invalid JSON file. Please check the file format';
-      highlightConfig.value = true;
+      highlightDataset.value = true;
+      if (input.value) input.value = '';
+      currentFile.value = null;
     }
   }
 };
@@ -105,6 +125,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
             v-if="isGenericDataset"
             message="Custom language datasets are disabled when using a generic dataset. Please use the generic expansion rates instead."
           />
+
           <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
             <div>
               <label class="flex items-center space-x-2">
@@ -174,42 +195,48 @@ const isGenericDataset = computed(() => store.useGenericDataset);
                 </div>
               </div>
             </div>
-            <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Select Language
-                </label>
-                <select
-                  v-model="selectedLanguageCode"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select a language</option>
-                  <option
-                    v-for="lang in availableLanguages"
-                    :key="lang.code"
-                    :value="lang.code"
-                  >
-                    {{ lang.name }}
-                  </option>
-                </select>
-              </div>
 
-              <div v-if="selectedLanguageCode">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Upload JSON Dataset
-                </label>
-                <input
-                  type="file"
-                  accept=".json"
-                  @change="handleFileChange"
-                  class="block w-full text-sm text-gray-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-md file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-50 file:text-blue-700
-                    hover:file:bg-blue-100"
-                />
-              </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Select Language
+              </label>
+              <select
+                v-model="selectedLanguageCode"
+                :class="[
+                  'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',
+                  highlightLanguage 
+                    ? 'border-red-300 focus:ring-red-500 bg-red-50'
+                    : 'border-gray-300 focus:ring-blue-500'
+                ]"
+              >
+                <option value="">Select a language</option>
+                <option
+                  v-for="lang in availableLanguages"
+                  :key="lang.code"
+                  :value="lang.code"
+                >
+                  {{ lang.name }}
+                </option>
+              </select>
+            </div>
+
+            <div v-if="selectedLanguageCode">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Upload JSON Dataset
+              </label>
+              <input
+                type="file"
+                accept=".json"
+                @change="handleFileChange"
+                :class="[
+                  'block w-full text-sm text-gray-500',
+                  'file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0',
+                  'file:text-sm file:font-semibold',
+                  highlightDataset 
+                    ? 'file:bg-red-50 file:text-red-700 hover:file:bg-red-100'
+                    : 'file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
+                ]"
+              />
             </div>
           </div>
         </template>
