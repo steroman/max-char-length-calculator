@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { genericDataset } from '../data/genericDataset';
 
 const calculateAverageLength = (dataset) => {
   const lengths = Object.values(dataset).map(str => str.length);
@@ -24,7 +25,7 @@ export const useCalculatorStore = defineStore('calculator', {
     localization: {
       enabled: false,
       useGenericRates: true,
-      genericExpansionRate: 1.3,
+      genericExpansionRate: 1.40,
       languages: [],
     },
     maxCharLength: 0,
@@ -69,6 +70,19 @@ export const useCalculatorStore = defineStore('calculator', {
       }
     },
     processDataset(dataset, forLanguage) {
+      if (this.useGenericDataset) {
+        const characterData = Object.entries(genericDataset.frequencies).map(([char, frequency]) => ({
+          char,
+          count: 0,
+          frequency,
+          width: undefined,
+        }));
+        
+        this.characterData = characterData;
+        this.sortCharacterData(characterData, 'char', 'asc');
+        return;
+      }
+
       const values = Object.values(dataset);
       const combinedText = values.join(' ');
       
@@ -152,6 +166,7 @@ export const useCalculatorStore = defineStore('calculator', {
       this.maxCharLength = Math.floor(this.elementWidth / totalFrequencyWidth);
       
       // Apply 10% reduction if enabled
+
       if (this.datasetConfig.reduceByTenPercent) {
         this.reducedMaxCharLength = Math.floor(this.maxCharLength * 0.9);
       } else {

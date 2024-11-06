@@ -1,15 +1,12 @@
-<script setup lang="ts">
-defineProps<{
-  text: string;
-  link?: {
-    url: string;
-    text: string;
-  };
-}>();
+<script setup>
+defineProps({
+  text: String,
+  link: Object
+});
 </script>
 
 <template>
-  <p class="mt-1.5 text-sm text-gray-500">
+  <p class="mt-1.5 text-xs text-gray-500">
     <template v-if="link">
       {{ text.split('[Link]')[0] }}
       <a 

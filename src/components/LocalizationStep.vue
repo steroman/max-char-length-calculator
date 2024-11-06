@@ -1,26 +1,31 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import Toggle from './ui/Toggle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
+import WarningMessage from './ui/WarningMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 import type { LanguageData } from '../types';
 
 const store = useCalculatorStore();
 const selectedLanguageCode = ref('');
-const currentFile = ref<File | null>(null);
+const currentFile = ref(null);
 const error = ref('');
 const highlightConfig = ref(false);
 
-// Placeholder expansion rates
 const genericRates = [
-  { label: 'Minimal (10%)', value: 1.1 },
-  { label: 'Moderate (20%)', value: 1.2 },
-  { label: 'Significant (30%)', value: 1.3 },
-  { label: 'Large (40%)', value: 1.4 },
-  { label: 'Very Large (50%)', value: 1.5 },
+  { label: '+15% (to Russian)', value: 1.15 },
+  { label: '+20% (to French)', value: 1.20 },
+  { label: '+25% (to Arabic or Italian)', value: 1.25 },
+  { label: '+30% (to Spanish or Portuguese)', value: 1.30 },
+  { label: '+35% (to German)', value: 1.35 },
+  { label: '+40% (Extra safe)', value: 1.40 },
 ];
+
+if (store.localization.genericExpansionRate === 1.3) {
+  store.setGenericExpansionRate(1.40);
+}
 
 const availableLanguages = computed(() => {
   return languages.filter(lang => 
@@ -48,8 +53,8 @@ const handlePrevious = () => {
   store.previousStep();
 };
 
-const handleFileChange = async (event: Event) => {
-  const input = event.target as HTMLInputElement;
+const handleFileChange = async (event) => {
+  const input = event.target;
   if (input.files && input.files[0] && selectedLanguageCode.value) {
     currentFile.value = input.files[0];
     error.value = '';
@@ -59,7 +64,7 @@ const handleFileChange = async (event: Event) => {
       const text = await currentFile.value.text();
       const dataset = JSON.parse(text);
       
-      const language: LanguageData = {
+      const language = {
         code: selectedLanguageCode.value,
         name: languages.find(l => l.code === selectedLanguageCode.value)?.name || '',
         dataset,
@@ -80,6 +85,8 @@ const handleFileChange = async (event: Event) => {
     }
   }
 };
+
+const isGenericDataset = computed(() => store.useGenericDataset);
 </script>
 
 <template>
@@ -87,7 +94,6 @@ const handleFileChange = async (event: Event) => {
     <h2 class="text-2xl font-bold mb-4">Localization Settings</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-6">
-        <!-- Enable/Disable Localization -->
         <div>
           <Toggle
             v-model="store.localization.enabled"
@@ -96,7 +102,10 @@ const handleFileChange = async (event: Event) => {
         </div>
 
         <template v-if="store.localization.enabled">
-          <!-- Generic vs Custom Rates -->
+          <WarningMessage
+            v-if="isGenericDataset"
+            message="Custom language datasets are disabled when using a generic dataset. Please use the generic expansion rates instead."
+          />
           <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
             <div>
               <label class="flex items-center space-x-2">
@@ -115,16 +124,21 @@ const handleFileChange = async (event: Event) => {
                   type="radio"
                   v-model="store.localization.useGenericRates"
                   :value="false"
+                  :disabled="isGenericDataset"
                   class="text-blue-600 focus:ring-blue-500"
                 />
-                <span class="text-sm">Use custom language datasets</span>
+                <span class="text-sm" :class="{ 'opacity-50': isGenericDataset }">
+                  Use custom language datasets
+                </span>
               </label>
             </div>
           </div>
 
-          <!-- Generic Rates Selection -->
           <div v-if="store.localization.useGenericRates" class="space-y-4">
             <h3 class="text-lg font-semibold">Select Expansion Rate</h3>
+            <p class="text-sm text-gray-600 mb-4">
+              Expansion rates from English. If you don't know, choose the extra safe option.
+            </p>
             <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-2">
               <div v-for="rate in genericRates" :key="rate.value" class="flex items-center">
                 <label class="flex items-center space-x-2">
@@ -140,11 +154,9 @@ const handleFileChange = async (event: Event) => {
             </div>
           </div>
 
-          <!-- Custom Language Dataset Upload -->
-          <div v-else class="space-y-4">
+          <div v-else-if="!isGenericDataset" class="space-y-4">
             <h3 class="text-lg font-semibold">Add Language Datasets</h3>
             
-            <!-- Added Languages -->
             <div v-if="store.localization.languages.length > 0" class="mb-4">
               <h4 class="text-sm font-medium text-gray-700 mb-2">Added Languages:</h4>
               <div class="space-y-2">
@@ -163,8 +175,6 @@ const handleFileChange = async (event: Event) => {
                 </div>
               </div>
             </div>
-
-            <!-- Add New Language -->
             <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">

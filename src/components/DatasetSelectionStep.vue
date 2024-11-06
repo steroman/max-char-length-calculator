@@ -15,6 +15,9 @@ const highlightLanguage = ref(false);
 const highlightDataset = ref(false);
 
 watch(() => store.useGenericDataset, (newValue) => {
+  // Set the reduction toggle based on dataset type
+  store.datasetConfig.reduceByTenPercent = newValue;
+
   if (newValue) {
     store.selectedLanguageCode = 'en';
     const dataset = Object.entries(genericDataset.frequencies).reduce((acc, [char, freq]) => {
@@ -60,6 +63,8 @@ const handleNext = async () => {
       const text = await selectedFile.value.text();
       const dataset = JSON.parse(text);
       store.processDataset(dataset);
+      // Ensure reduction is off for custom datasets
+      store.datasetConfig.reduceByTenPercent = false;
     } catch (e) {
       error.value = 'Invalid JSON file. Please check the file format';
       highlightDataset.value = true;

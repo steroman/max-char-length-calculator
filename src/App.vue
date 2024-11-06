@@ -1,6 +1,5 @@
 <script setup>
-
-import { useCalculatorStore } from './stores/calculator.js';
+import { useCalculatorStore } from './stores/calculator';
 import WelcomeStep from './components/WelcomeStep.vue';
 import WidthInputStep from './components/WidthInputStep.vue';
 import DatasetSelectionStep from './components/DatasetSelectionStep.vue';
