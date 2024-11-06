@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <p class="mt-1.5 text-sm text-gray-500">
+  <p class="mt-1.5 text-xs text-gray-500">
     <template v-if="link">
       {{ text.split('[Link]')[0] }}
       <a 
