@@ -17,18 +17,36 @@ const handlePrevious = () => {
   store.previousStep();
 };
 
+const formatLength = (roundedValue, exactValue) => {
+  const exact = Number(exactValue);
+  if (Number.isInteger(exact) || roundedValue === exact) {
+    return `${roundedValue} characters`;
+  }
+  return `${roundedValue} characters (rounded down from ${exact.toFixed(2)})`;
+};
+
 const getMaxLengthDisplay = computed(() => {
   const parts = [];
 
   if (store.adjustedMaxCharLength !== null) {
-    parts.push(`Adjusted for localization: ${store.adjustedMaxCharLength} characters`);
+    const baseLength = store.reducedMaxCharLength || store.maxCharLength;
+    const expansionRate = store.localization.useGenericRates 
+      ? store.localization.genericExpansionRate 
+      : Math.max(...store.localization.languages.map(lang => lang.expansionRate), 1);
+    const exactAdjusted = baseLength / expansionRate;
+    parts.push(`Adjusted for localization: ${formatLength(store.adjustedMaxCharLength, exactAdjusted)}`);
   }
 
   if (store.datasetConfig.reduceByTenPercent && store.reducedMaxCharLength !== null) {
-    parts.push(`With 10% reduction: ${store.reducedMaxCharLength} characters`);
+    const exactReduced = store.maxCharLength * 0.9;
+    parts.push(`With 10% reduction: ${formatLength(store.reducedMaxCharLength, exactReduced)}`);
   }
 
-  parts.push(`Base length: ${store.maxCharLength} characters`);
+  const totalFrequencyWidth = store.characterData.reduce((sum, char) => {
+    return sum + (char.frequency / 100) * (char.width || 0);
+  }, 0);
+  const exactMax = store.elementWidth / totalFrequencyWidth;
+  parts.push(`Base length: ${formatLength(store.maxCharLength, exactMax)}`);
 
   return parts;
 });
