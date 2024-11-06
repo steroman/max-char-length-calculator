@@ -41,7 +41,6 @@ const handleNext = () => {
           <li> The project is also open-source. You can find the code on <a class="text-blue-500" href="https://github.com/steroman/max-char-length-calculator">GitHub</a></li>
                   <li> Code produced by AI (ChatGPT + Bolt)</li>
         </ul>
-      <p class="mb-4">Based on my article <a class="text-blue-500" href="https://uxcontent.com/a-formula-for-defining-maximum-character-lengths/">A formula for defining maximum character lengths</a>.</p>
-</div>
+      <p class="mb-4 text-xs">Based on my article <a class="text-blue-500" href="https://uxcontent.com/a-formula-for-defining-maximum-character-lengths/" target="_blank">A formula for defining maximum character lengths</a>.</p>
     </div>
 </template>

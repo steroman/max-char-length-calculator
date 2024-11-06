@@ -6,6 +6,7 @@ import ErrorMessage from './ui/ErrorMessage.vue';
 import WarningMessage from './ui/WarningMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
+import type { LanguageData } from '../types';
 
 const store = useCalculatorStore();
 const selectedLanguageCode = ref('');
@@ -105,7 +106,6 @@ const isGenericDataset = computed(() => store.useGenericDataset);
             v-if="isGenericDataset"
             message="Custom language datasets are disabled when using a generic dataset. Please use the generic expansion rates instead."
           />
-
           <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
             <div>
               <label class="flex items-center space-x-2">
@@ -175,7 +175,6 @@ const isGenericDataset = computed(() => store.useGenericDataset);
                 </div>
               </div>
             </div>
-
             <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">

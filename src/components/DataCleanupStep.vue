@@ -21,7 +21,6 @@ const updateConfig = () => {
 };
 
 const isGenericDataset = computed(() => store.useGenericDataset);
-
 // Watch for changes in useGenericDataset and update reduceByTenPercent accordingly
 watch(() => store.useGenericDataset, (isGeneric) => {
   store.datasetConfig.reduceByTenPercent = isGeneric;
