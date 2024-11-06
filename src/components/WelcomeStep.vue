@@ -43,4 +43,5 @@ const handleNext = () => {
         </ul>
       <p class="mb-4 text-xs">Based on my article <a class="text-blue-500" href="https://uxcontent.com/a-formula-for-defining-maximum-character-lengths/" target="_blank">A formula for defining maximum character lengths</a>.</p>
     </div>
+    </div>
 </template>
