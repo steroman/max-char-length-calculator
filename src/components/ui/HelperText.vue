@@ -1,11 +1,8 @@
-<script setup lang="ts">
-defineProps<{
-  text: string;
-  link?: {
-    url: string;
-    text: string;
-  };
-}>();
+<script setup>
+defineProps({
+  text: String,
+  link: Object
+});
 </script>
 
 <template>

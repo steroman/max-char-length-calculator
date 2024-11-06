@@ -1,13 +1,11 @@
-<script setup lang="ts">
-defineProps<{
-  modelValue: boolean;
-  disabled?: boolean;
-  label?: string;
-}>();
+<script setup>
+defineProps({
+  modelValue: Boolean,
+  disabled: Boolean,
+  label: String
+});
 
-defineEmits<{
-  (e: 'update:modelValue', value: boolean): void;
-}>();
+defineEmits(['update:modelValue']);
 </script>
 
 <template>

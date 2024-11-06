@@ -1,6 +1,6 @@
 {
-  "name": "mclc",
-  "version": "0.0.0",
+  "name": "max-character-length-calculator",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,7 +11,9 @@
   "dependencies": {
     "pinia": "^2.2.4",
     "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "@vueuse/core": "^10.7.2"
+
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",

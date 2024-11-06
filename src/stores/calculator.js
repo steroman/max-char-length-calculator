@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { genericDataset } from '../data/genericDataset';
 
 const calculateAverageLength = (dataset) => {
   const lengths = Object.values(dataset).map(str => str.length);
@@ -16,6 +17,7 @@ export const useCalculatorStore = defineStore('calculator', {
       ignoreNumbers: false,
       ignoreSymbols: false,
       ignoreSpaces: false,
+      reduceByTenPercent: true,
     },
     characterData: [],
     mainLanguage: null,
@@ -23,11 +25,12 @@ export const useCalculatorStore = defineStore('calculator', {
     localization: {
       enabled: false,
       useGenericRates: true,
-      genericExpansionRate: 1.3,
+      genericExpansionRate: 1.40,
       languages: [],
     },
     maxCharLength: 0,
     adjustedMaxCharLength: null,
+    reducedMaxCharLength: null,
   }),
 
   actions: {
@@ -67,6 +70,19 @@ export const useCalculatorStore = defineStore('calculator', {
       }
     },
     processDataset(dataset, forLanguage) {
+      if (this.useGenericDataset) {
+        const characterData = Object.entries(genericDataset.frequencies).map(([char, frequency]) => ({
+          char,
+          count: 0,
+          frequency,
+          width: undefined,
+        }));
+        
+        this.characterData = characterData;
+        this.sortCharacterData(characterData, 'char', 'asc');
+        return;
+      }
+
       const values = Object.values(dataset);
       const combinedText = values.join(' ');
       
@@ -149,6 +165,12 @@ export const useCalculatorStore = defineStore('calculator', {
       }, 0);
 
       this.maxCharLength = Math.floor(this.elementWidth / totalFrequencyWidth);
+      
+      if (this.datasetConfig.reduceByTenPercent) {
+        this.reducedMaxCharLength = Math.floor(this.maxCharLength * 0.9);
+      } else {
+        this.reducedMaxCharLength = null;
+      }
 
       if (this.localization.enabled) {
         let expansionRate;
@@ -162,7 +184,8 @@ export const useCalculatorStore = defineStore('calculator', {
           );
         }
 
-        this.adjustedMaxCharLength = Math.floor(this.maxCharLength / expansionRate);
+        const baseLength = this.reducedMaxCharLength || this.maxCharLength;
+        this.adjustedMaxCharLength = Math.floor(baseLength / expansionRate);
       } else {
         this.adjustedMaxCharLength = null;
       }

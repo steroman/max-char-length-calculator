@@ -1,11 +1,14 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
+import ErrorMessage from './ui/ErrorMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
 
 const store = useCalculatorStore();
-const sortField = ref<SortField>('char');
-const sortDirection = ref<SortDirection>('asc');
+const sortField = ref('char');
+const sortDirection = ref('asc');
+const error = ref('');
+const invalidWidths = ref(new Set());
 
 const characterSummary = computed(() => {
   return store.characterData.map(char => ({
@@ -14,7 +17,11 @@ const characterSummary = computed(() => {
   }));
 });
 
-const handleSort = (field: SortField) => {
+const allWidthsEntered = computed(() => {
+  return store.characterData.every(char => char.width !== undefined && char.width > 0);
+});
+
+const handleSort = (field) => {
   if (sortField.value === field) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
   } else {
@@ -24,12 +31,25 @@ const handleSort = (field: SortField) => {
   store.sortCharacterData(store.characterData, field, sortDirection.value);
 };
 
-const getSortIcon = (field: SortField) => {
+const getSortIcon = (field) => {
   if (sortField.value !== field) return '↕️';
   return sortDirection.value === 'asc' ? '↑' : '↓';
 };
 
 const handleNext = () => {
+  invalidWidths.value.clear();
+  
+  const invalid = store.characterData
+    .filter(char => char.width === undefined || char.width <= 0)
+    .map(char => char.char);
+    
+  if (invalid.length > 0) {
+    invalidWidths.value = new Set(invalid);
+    error.value = 'Please enter valid widths for all characters before proceeding';
+    return;
+  }
+  
+  error.value = '';
   store.nextStep();
 };
 
@@ -37,14 +57,19 @@ const handlePrevious = () => {
   store.previousStep();
 };
 
-const updateCharacterWidth = (char: string, width: string) => {
+const updateCharacterWidth = (char, width) => {
   const numWidth = parseFloat(width);
   if (!isNaN(numWidth)) {
     const charData = store.characterData.find(c => c.char === char);
     if (charData) {
       charData.width = numWidth;
+      invalidWidths.value.delete(char);
     }
   }
+};
+
+const formatCount = (count) => {
+  return store.useGenericDataset ? '.' : count;
 };
 </script>
 
@@ -85,16 +110,21 @@ const updateCharacterWidth = (char: string, width: string) => {
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="char in characterSummary" :key="char.char">
-                  <td class="px-4 py-2 text-sm">{{ char.char === ' ' ? '(space)' : char.char }}</td>
-                  <td class="px-4 py-2 text-sm">{{ char.count }}</td>
+                  <td class="px-4 py-2 text-sm">{{ char.char }}</td>
+                  <td class="px-4 py-2 text-sm">{{ formatCount(char.count) }}</td>
                   <td class="px-4 py-2 text-sm">{{ char.frequency }}%</td>
                   <td class="px-4 py-2 text-sm">
                     <input
                       type="number"
                       step="0.1"
                       :value="char.width"
-                      @input="(e) => updateCharacterWidth(char.char, (e.target as HTMLInputElement).value)"
-                      class="w-24 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      @input="(e) => updateCharacterWidth(char.char, e.target.value)"
+                      :class="[
+                        'w-24 px-2 py-1 border rounded-md focus:outline-none focus:ring-2',
+                        invalidWidths.has(char.char)
+                          ? 'border-red-300 focus:ring-red-500 bg-red-50'
+                          : 'border-gray-300 focus:ring-blue-500'
+                      ]"
                     />
                   </td>
                 </tr>
@@ -104,6 +134,7 @@ const updateCharacterWidth = (char: string, width: string) => {
         </div>
       </div>
 
+      <ErrorMessage :message="error" />
       <StepNavigation
         @next="handleNext"
         @previous="handlePrevious"
