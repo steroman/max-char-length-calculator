@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import StepNavigation from './StepNavigation.vue';
-import ExternalLink from './ui/ExternalLink.vue';
+import WarningMessage from './ui/WarningMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
 
 const store = useCalculatorStore();
@@ -29,20 +29,8 @@ const handleNext = () => {
       </p>
       <StepNavigation @next="handleNext" />
     </div>
-  </div>
-  <div class="max-w-2xl mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-xl font-bold mb-4">Disclaimer</h2>
-      <p class="mb-4">
-        A few things to know before using this tool:
-      </p>
-      <ul class="list-disc ml-6 mb-6">
-        <li>I'm not storing any of your data—Everything runs in the browser and is reset every time you refresh the page</li>
-        <li>This is a passion project and it's far from perfect. If you spot any issues or have any suggestions, you can report them <ExternalLink href="https://github.com/steroman/max-char-length-calculator/issues/new/choose">directly on GitHub</ExternalLink></li>
-        <li>The project is also open-source. You can find the code on <ExternalLink href="https://github.com/steroman/max-char-length-calculator">GitHub</ExternalLink></li>
-        <li>Code produced by AI (ChatGPT + Bolt)</li>
-      </ul>
-      <p class="mb-4">Based on my article <ExternalLink href="https://uxcontent.com/a-formula-for-defining-maximum-character-lengths/">A formula for defining maximum character lengths</ExternalLink>.</p>
+    <div class="mt-4">
+      <WarningMessage message="None of your data is stored—everything runs in your browser." />
     </div>
   </div>
 </template>
