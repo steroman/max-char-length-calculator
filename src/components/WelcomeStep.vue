@@ -12,20 +12,34 @@ const handleNext = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-4">Max character length calculator for UI elements</h1>
+    <h1 class="text-2xl font-bold mb-4">📐 Maximum character length calculator 🧮</h1>
+    <p class="mb-4">For UI elements, based on real data</p>
     <div class="bg-white rounded-lg shadow-md p-6">
-      <p class="mb-4">Welcome,</p>
+      <p class="mb-4">👋 Welcome,</p>
       <p class="mb-4">
-        This tool will help you calculate the maximum character length for your UI elements.
+        This tool calculates the maximum character length for a given UI element based on real data.
         You'll need:
       </p>
-      <ul class="list-disc ml-6 mb-6">
-        <li>The width of your UI element in pixels</li>
-        <li>A dataset of text content (or use our generic dataset)</li>
-        <li>Character width measurements for your font</li>
+      <ul class="space-y-2 mb-6">
+        <li class="flex items-start">
+          <span class="mr-2">✅</span>
+          <span>The width of your UI element in pixels</span>
+        </li>
+        <li class="flex items-start">
+          <span class="mr-2">✅</span>
+          <span>(Optional) A JSON file with existing localization keys for the UI element (see sample). If you don't have it, a generic dataset is available.</span>
+        </li>
+        <li class="flex items-start">
+          <span class="mr-2">✅</span>
+          <span>The width of every character in the font that you use for the UI element</span>
+        </li>
+        <li class="flex items-start">
+          <span class="mr-2">✅</span>
+          <span>(Optional) JSON files for the localization keys in other languages. If you don't have it, a generic dataset is available.</span>
+        </li>
       </ul>
       <p class="mb-4">
-        The calculator will guide you through the process step by step.
+        ⏳ Let's get started…
       </p>
       <StepNavigation @next="handleNext" />
     </div>
