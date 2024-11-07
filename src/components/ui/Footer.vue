@@ -1,14 +1,17 @@
 <script setup>
+import { ref } from 'vue';
 import ExternalLink from './ExternalLink.vue';
+import FeedbackForm from '../FeedbackForm.vue';
+
+const isFeedbackOpen = ref(false);
+const isAboutOpen = ref(false);
 
 const openFeedbackDialog = () => {
-  // Placeholder for future implementation
-  console.log('Feedback dialog will be implemented');
+  isFeedbackOpen.value = true;
 };
 
 const openAboutDialog = () => {
-  // Placeholder for future implementation
-  console.log('About dialog will be implemented');
+  isAboutOpen.value = true;
 };
 </script>
 
@@ -45,5 +48,10 @@ const openAboutDialog = () => {
         </button>
       </div>
     </div>
+
+    <FeedbackForm
+      :is-open="isFeedbackOpen"
+      @close="isFeedbackOpen = false"
+    />
   </footer>
 </template>
