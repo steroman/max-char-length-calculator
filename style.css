@@ -10,6 +10,11 @@
   color: #1f2937;
 }
 
+/* Always show scrollbar to prevent layout shifts */
+/* html {
+  overflow-y: scroll;
+} */
+
 body {
   margin: 0;
   min-width: 320px;

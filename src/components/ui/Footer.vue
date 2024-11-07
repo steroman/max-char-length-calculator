@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import ExternalLink from './ExternalLink.vue';
 import FeedbackForm from '../FeedbackForm.vue';
+import AboutModal from '../AboutModal.vue';
 
 const isFeedbackOpen = ref(false);
 const isAboutOpen = ref(false);
@@ -52,6 +53,11 @@ const openAboutDialog = () => {
     <FeedbackForm
       :is-open="isFeedbackOpen"
       @close="isFeedbackOpen = false"
+    />
+
+    <AboutModal
+      :is-open="isAboutOpen"
+      @close="isAboutOpen = false"
     />
   </footer>
 </template>
