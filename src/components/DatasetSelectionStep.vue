@@ -82,27 +82,32 @@ const handlePrevious = () => {
     <h2 class="text-2xl font-bold mb-4">Select Dataset</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="mb-6">
-        <div class="space-y-4">
-          <div>
-            <div class="flex items-center space-x-3">
-              <input
-                id="generic-dataset"
-                type="radio"
-                v-model="store.useGenericDataset"
-                :value="true"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500"
-              />
-              <label for="generic-dataset" class="text-sm font-medium text-gray-700">
-                Use generic dataset (English only)
-              </label>
+        <div class="space-y-6">
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center space-x-3">
+                <input
+                  id="generic-dataset"
+                  type="radio"
+                  v-model="store.useGenericDataset"
+                  :value="true"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                />
+                <label for="generic-dataset" class="text-sm font-medium text-gray-700">
+                  Use generic dataset (English only)
+                </label>
+              </div>
+              <div class="ml-7">
+                <HelperText 
+                  text="Based on standard English letter frequency data from [Link]"
+                  :link="{
+                    url: 'https://en.wikipedia.org/wiki/Letter_frequency',
+                    text: 'Wikipedia'
+                  }"
+                />
+              </div>
             </div>
-            <HelperText 
-              text="Based on standard English letter frequency data from [Link]"
-              :link="{
-                url: 'https://en.wikipedia.org/wiki/Letter_frequency',
-                text: 'Wikipedia'
-              }"
-            />
+
             <div class="flex items-center space-x-3">
               <input
                 id="custom-dataset"
