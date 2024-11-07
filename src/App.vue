@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue';
 import { useCalculatorStore } from './stores/calculator';
 import WelcomeStep from './components/WelcomeStep.vue';
 import WidthInputStep from './components/WidthInputStep.vue';
@@ -11,7 +12,7 @@ import Footer from './components/ui/Footer.vue';
 
 const store = useCalculatorStore();
 
-const getCurrentStep = () => {
+const getCurrentStep = computed(() => {
   switch (store.currentStep) {
     case 1:
       return WelcomeStep;
@@ -30,14 +31,14 @@ const getCurrentStep = () => {
     default:
       return WelcomeStep;
   }
-};
+});
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col">
-    <main class="flex-grow py-8">
-      <component :is="getCurrentStep()" />
+  <div class="min-h-screen bg-gray-100">
+    <main class="pb-20">
+      <component :is="getCurrentStep" />
     </main>
-    <Footer />
+    <Footer class="fixed bottom-0 left-0 right-0" />
   </div>
 </template>

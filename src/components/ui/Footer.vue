@@ -16,7 +16,7 @@ const openAboutDialog = () => {
 </script>
 
 <template>
-  <footer class="mt-8 py-4 bg-gray-50">
+  <footer class="w-full bg-gray-50 py-4 shadow-lg">
     <div class="max-w-4xl mx-auto px-6">
       <div class="flex flex-wrap justify-center gap-4 text-xs text-gray-500">
         <ExternalLink
