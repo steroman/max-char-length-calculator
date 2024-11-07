@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import StepNavigation from './StepNavigation.vue';
 import WarningMessage from './ui/WarningMessage.vue';
+import ExternalLink from './ui/ExternalLink.vue';
 import { useCalculatorStore } from '../stores/calculator';
 
 const store = useCalculatorStore();
@@ -27,7 +28,9 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>(Optional) A JSON file with existing localization keys for the UI element (see sample). If you don't have it, a generic dataset is available.</span>
+          <span>(Optional) A JSON file with existing keys for the UI element (<ExternalLink
+              href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json">
+            example</ExternalLink>). If you don't have it, a generic dataset is available.</span>
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
@@ -35,7 +38,9 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>(Optional) JSON files for the localization keys in other languages. If you don't have it, a generic dataset is available.</span>
+          <span>(Optional) JSON files for the localization keys in other languages (<ExternalLink
+              href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/ru-ru.json">
+            example</ExternalLink>). If you don't have it, a generic dataset is available.</span>
         </li>
       </ul>
       <p class="mb-4">
