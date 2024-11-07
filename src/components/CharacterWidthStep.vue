@@ -69,7 +69,7 @@ const updateCharacterWidth = (char, width) => {
 };
 
 const formatCount = (count) => {
-  return store.useGenericDataset ? '.' : count;
+  return store.useGenericDataset ? '-' : count;
 };
 </script>
 
