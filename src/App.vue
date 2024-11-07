@@ -7,6 +7,7 @@ import DataCleanupStep from './components/DataCleanupStep.vue';
 import CharacterWidthStep from './components/CharacterWidthStep.vue';
 import LocalizationStep from './components/LocalizationStep.vue';
 import ResultsStep from './components/ResultsStep.vue';
+import Footer from './components/ui/Footer.vue';
 
 const store = useCalculatorStore();
 
@@ -33,7 +34,10 @@ const getCurrentStep = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 py-8">
-    <component :is="getCurrentStep()" />
+  <div class="min-h-screen bg-gray-100 flex flex-col">
+    <main class="flex-grow py-8">
+      <component :is="getCurrentStep()" />
+    </main>
+    <Footer />
   </div>
 </template>
