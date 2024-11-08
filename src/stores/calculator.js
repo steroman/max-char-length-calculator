@@ -11,6 +11,7 @@ const initialState = {
   elementWidth: 0,
   useGenericDataset: false,
   rawDataset: {},
+  usageCount: 0,
   datasetConfig: {
     ignoreCapitals: false,
     ignoreNumbers: false,
@@ -30,7 +31,6 @@ const initialState = {
   maxCharLength: 0,
   adjustedMaxCharLength: null,
   reducedMaxCharLength: null,
-  usageCount: 0,
 };
 
 export const useCalculatorStore = defineStore('calculator', {
@@ -47,6 +47,13 @@ export const useCalculatorStore = defineStore('calculator', {
       if (this.currentStep === 7) {
         this.usageCount++;
         localStorage.setItem('calculatorUsageCount', this.usageCount.toString());
+        // Track completion event in GA4
+        if (window.gtag) {
+          window.gtag('event', 'calculation_complete', {
+            'event_category': 'Calculator',
+            'event_label': 'Character Length Calculation'
+          });
+        }
       }
     },
     previousStep() {
