@@ -46,7 +46,7 @@ const handleFileChange = async (event) => {
       store.processDataset(dataset);
       store.datasetConfig.reduceByTenPercent = false;
     } catch (e) {
-      error.value = 'Invalid JSON file. Please check the file format';
+      error.value = 'Couldn\'t read the JSON file, try with a different format';
       highlightDataset.value = true;
       if (input.value) input.value = '';
       currentFile.value = null;
@@ -59,13 +59,13 @@ const handleNext = () => {
   highlightLanguage.value = false;
 
   if (!store.selectedLanguageCode) {
-    error.value = 'Please select a language';
+    error.value = 'Select a language';
     highlightLanguage.value = true;
     return;
   }
 
   if (!store.useGenericDataset && !currentFile.value) {
-    error.value = 'Please upload a JSON file';
+    error.value = 'Upload a JSON file';
     highlightDataset.value = true;
     return;
   }
@@ -80,7 +80,7 @@ const handlePrevious = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Select Dataset</h2>
+    <h2 class="text-2xl font-bold mb-4">Select a dataset</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="mb-6">
         <div class="space-y-6">
@@ -118,7 +118,7 @@ const handlePrevious = () => {
           <!-- Language Selection -->
           <div class="mt-6">
             <label for="language" class="block text-sm font-medium text-gray-700 mb-2">
-              Select Language
+              Language
             </label>
             <select
               id="language"
@@ -144,7 +144,7 @@ const handlePrevious = () => {
 
           <div v-if="!store.useGenericDataset && store.selectedLanguageCode" class="mt-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Upload JSON File
+              Upload JSON file
             </label>
             <div :class="{ 'p-2 rounded bg-red-50': highlightDataset }">
               <input

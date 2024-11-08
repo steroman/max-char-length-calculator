@@ -12,16 +12,16 @@ const touched = ref(false);
 
 const validateWidth = (value) => {
   if (value === '') {
-    return 'Please enter a width value';
+    return 'Enter a width value';
   }
   
   const numWidth = Number(value);
   if (isNaN(numWidth)) {
-    return 'Please enter a valid number';
+    return 'Enter a valid number';
   }
   
   if (numWidth <= 0) {
-    return numWidth === 0 ? 'Width cannot be zero' : 'Width must be greater than 0';
+    return numWidth === 0 ? 'The width cannot be zero' : 'The width must be greater than 0';
   }
   
   return '';
@@ -58,7 +58,7 @@ const handleBlur = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Enter UI Element Width</h2>
+    <h2 class="text-2xl font-bold mb-4">Enter the UI element's width</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="mb-6">
         <label for="width" class="block text-sm font-medium text-gray-700 mb-2">
