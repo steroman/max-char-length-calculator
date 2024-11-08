@@ -15,7 +15,7 @@ const emit = defineEmits(['close']);
 <template>
   <Modal
     :is-open="isOpen"
-    title="About Me"
+    title="About me"
     @close="emit('close')"
   >
     <div class="space-y-4">

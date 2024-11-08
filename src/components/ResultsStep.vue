@@ -18,6 +18,11 @@ const handlePrevious = () => {
   store.previousStep();
 };
 
+const handleRestart = () => {
+  store.reset();
+  store.currentStep = 1;
+};
+
 const formatLength = (roundedValue, exactValue) => {
   const exact = Number(exactValue);
   if (Number.isInteger(exact) || roundedValue === exact) {
@@ -243,12 +248,18 @@ const toggleCharacterSummary = () => {
         </div>
       </div>
 
-      <div class="flex justify-start mt-8">
+      <div class="flex justify-between mt-8">
         <button
           @click="handlePrevious"
           class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
         >
           Previous
+        </button>
+        <button
+          @click="handleRestart"
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Start again
         </button>
       </div>
     </div>
