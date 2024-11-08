@@ -33,12 +33,17 @@ watch(() => store.useGenericDataset, (isGeneric) => {
     <h2 class="text-2xl font-bold mb-4">Configure Data Cleanup</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-4">
+        <p class="text-gray-600">
+          The more options you turn on, the more accurate the dataset, hence the more accurate the results.
+        </p>
+
+        <h3 class="text-lg font-semibold mb-4">Cleanup Options</h3>
+        
         <WarningMessage
           v-if="isGenericDataset"
           message="Cleanup options are disabled when using a generic dataset as the data is pre-processed."
         />
 
-        <h3 class="text-lg font-semibold mb-4">Cleanup Options</h3>
         <div class="space-y-6">
           <div>
             <Toggle
@@ -80,7 +85,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
               @update:modelValue="updateConfig"
             />
             <HelperText 
-              text="Recommended when using the generic dataset"
+              text="Recommended when using the generic dataset to compensate for inaccuracy"
             />
           </div>
         </div>
