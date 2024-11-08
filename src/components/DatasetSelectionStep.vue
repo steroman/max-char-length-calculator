@@ -83,47 +83,93 @@ const handlePrevious = () => {
     <h2 class="text-2xl font-bold mb-4">Select Dataset</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="mb-6">
-        <div class="space-y-6">
-          <div class="space-y-4">
-            <div class="space-y-2">
-              <div class="flex items-center space-x-3">
-                <input
-                  id="generic-dataset"
-                  type="radio"
-                  v-model="store.useGenericDataset"
-                  :value="true"
-                  class="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                />
-                <label for="generic-dataset" class="text-sm font-medium text-gray-700">
-                  Use generic dataset (English only)
-                </label>
-              </div>
-              <div class="ml-7">
-                <HelperText 
-                  text="Based on standard English letter frequency data from [Link]"
-                  :link="{
-                    url: 'https://en.wikipedia.org/wiki/Letter_frequency',
-                    text: 'Wikipedia'
-                  }"
-                />
+        <div class="space-y-4">
+          <!-- Dataset Selection Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Generic Dataset Card -->
+            <div
+              class="relative p-4 border-2 rounded-lg cursor-pointer transition-all duration-200"
+              :class="[
+                store.useGenericDataset
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+              ]"
+              @click="store.useGenericDataset = true"
+            >
+              <!-- Hidden Radio Button -->
+              <input
+                id="generic-dataset"
+                type="radio"
+                v-model="store.useGenericDataset"
+                :value="true"
+                class="sr-only"
+              />
+              
+              <!-- Card Content -->
+              <div class="space-y-2">
+                <div class="flex items-center">
+                  <div
+                    class="w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center"
+                    :class="[
+                      store.useGenericDataset
+                        ? 'border-blue-500 bg-blue-500'
+                        : 'border-gray-300'
+                    ]"
+                  >
+                    <div
+                      v-if="store.useGenericDataset"
+                      class="w-2 h-2 rounded-full bg-white"
+                    ></div>
+                  </div>
+                  <span class="font-medium">Use generic dataset</span>
+                </div>
+                <p class="text-sm text-gray-600 ml-6">
+                  Based on standard English letter frequency data from 
+                  <ExternalLink
+                    href="https://en.wikipedia.org/wiki/Letter_frequency"
+                  >Wikipedia</ExternalLink>
+                </p>
               </div>
             </div>
 
-            <div class="space-y-2">
-              <div class="flex items-center space-x-3">
-                <input
-                  id="custom-dataset"
-                  type="radio"
-                  v-model="store.useGenericDataset"
-                  :value="false"
-                  class="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                />
-                <label for="custom-dataset" class="text-sm font-medium text-gray-700">
-                  Upload custom dataset
-                </label>
-              </div>
-              <div class="ml-7">
-                <p class="text-xs text-gray-500">
+            <!-- Custom Dataset Card -->
+            <div
+              class="relative p-4 border-2 rounded-lg cursor-pointer transition-all duration-200"
+              :class="[
+                !store.useGenericDataset
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+              ]"
+              @click="store.useGenericDataset = false"
+            >
+              <!-- Hidden Radio Button -->
+              <input
+                id="custom-dataset"
+                type="radio"
+                v-model="store.useGenericDataset"
+                :value="false"
+                class="sr-only"
+              />
+              
+              <!-- Card Content -->
+              <div class="space-y-2">
+                <div class="flex items-center">
+                  <div
+                    class="w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center"
+                    :class="[
+                      !store.useGenericDataset
+                        ? 'border-blue-500 bg-blue-500'
+                        : 'border-gray-300'
+                    ]"
+                  >
+                    <div
+                      v-if="!store.useGenericDataset"
+                      class="w-2 h-2 rounded-full bg-white"
+                    ></div>
+                  </div>
+                  <span class="font-medium">Upload custom dataset</span>
+                </div>
+                <p class="text-sm text-gray-600 ml-6">
                   A JSON file with the localization keys (
                   <ExternalLink
                     href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json"
