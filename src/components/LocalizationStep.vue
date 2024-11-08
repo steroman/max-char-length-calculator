@@ -198,18 +198,20 @@ const isGenericDataset = computed(() => store.useGenericDataset);
           <div v-if="store.localization.useGenericRates" class="space-y-4">
             <h3 class="text-lg font-semibold">Select Expansion Rate</h3>
             <HelperText text="If you're unsure, choose the extra safe option." />
-            <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-2">
-              <div v-for="rate in genericRates" :key="rate.value" class="flex items-center">
-                <label class="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    v-model="store.localization.genericExpansionRate"
-                    :value="rate.value"
-                    class="text-blue-600 focus:ring-blue-500"
-                  />
-                  <span class="text-sm">{{ rate.label }}</span>
-                </label>
-              </div>
+            <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }">
+              <select
+                v-model="store.localization.genericExpansionRate"
+                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500"
+              >
+                <option value="">Select an expansion rate</option>
+                <option
+                  v-for="rate in genericRates"
+                  :key="rate.value"
+                  :value="rate.value"
+                >
+                  {{ rate.label }}
+                </option>
+              </select>
             </div>
           </div>
 
