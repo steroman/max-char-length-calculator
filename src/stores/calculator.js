@@ -24,7 +24,7 @@ export const useCalculatorStore = defineStore('calculator', {
     selectedLanguageCode: '',
     localization: {
       enabled: false,
-      useGenericRates: true,
+      useGenericRates: false,
       genericExpansionRate: 1.40,
       languages: [],
     },
@@ -114,6 +114,7 @@ export const useCalculatorStore = defineStore('calculator', {
       if (forLanguage) {
         forLanguage.characterData = characterData;
         forLanguage.averageLength = calculateAverageLength(dataset);
+        
         const mainAvgLength = calculateAverageLength(this.rawDataset);
         forLanguage.expansionRate = forLanguage.averageLength / mainAvgLength;
       } else {
@@ -165,8 +166,6 @@ export const useCalculatorStore = defineStore('calculator', {
 
       this.maxCharLength = Math.floor(this.elementWidth / totalFrequencyWidth);
       
-      // Apply 10% reduction if enabled
-
       if (this.datasetConfig.reduceByTenPercent) {
         this.reducedMaxCharLength = Math.floor(this.maxCharLength * 0.9);
       } else {

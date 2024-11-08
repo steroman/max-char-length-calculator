@@ -5,6 +5,7 @@ import Toggle from './ui/Toggle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import WarningMessage from './ui/WarningMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
+import HelperText from './ui/HelperText.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 
@@ -154,7 +155,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
           />
 
           <div class="space-y-4">
-            <div>
+            <div class="space-y-2">
               <label class="flex items-center space-x-2">
                 <input
                   type="radio"
@@ -164,7 +165,17 @@ const isGenericDataset = computed(() => store.useGenericDataset);
                 />
                 <span class="text-sm">Use generic expansion rates</span>
               </label>
+              <div class="ml-6">
+                <p class="text-xs text-gray-500">
+                  These rates are estimated (
+                  <ExternalLink
+                    href="https://www.andiamo.co.uk/resources/expansion-and-contraction-factors"
+                  >source</ExternalLink>
+                  )
+                </p>
+              </div>
             </div>
+
             <div class="space-y-2">
               <label class="flex items-center space-x-2">
                 <input
@@ -180,7 +191,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               </label>
               <div class="ml-6">
                 <p class="text-xs text-gray-500">
-                  A JSON file with the localization keys (
+                  JSON files with the localization keys (
                   <ExternalLink
                     href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json"
                   >example</ExternalLink>
@@ -193,7 +204,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
           <div v-if="store.localization.useGenericRates" class="space-y-4">
             <h3 class="text-lg font-semibold">Select Expansion Rate</h3>
             <p class="text-sm text-gray-600 mb-4">
-              Expansion rates from English. If you don't know, choose the extra safe option.
+              If you're unsure, choose the extra safe option.
             </p>
             <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }" class="space-y-2">
               <div v-for="rate in genericRates" :key="rate.value" class="flex items-center">
@@ -212,7 +223,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
           <div v-else-if="!isGenericDataset" class="space-y-4">
             <h3 class="text-lg font-semibold">Language Datasets</h3>
-            
+            <p class="mb-4">Upload as many languages as you need, we'll calculate the expansion rate from the one with the largest expansion</p>
             <div v-if="store.localization.languages.length > 0" class="mb-4">
               <h4 class="text-sm font-medium text-gray-700 mb-2">Added Languages:</h4>
               <div class="space-y-2">
