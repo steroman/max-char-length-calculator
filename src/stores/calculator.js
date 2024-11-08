@@ -30,6 +30,7 @@ const initialState = {
   maxCharLength: 0,
   adjustedMaxCharLength: null,
   reducedMaxCharLength: null,
+  usageCount: 0,
 };
 
 export const useCalculatorStore = defineStore('calculator', {
@@ -37,10 +38,16 @@ export const useCalculatorStore = defineStore('calculator', {
 
   actions: {
     reset() {
+      const currentCount = this.usageCount;
       Object.assign(this, { ...initialState });
+      this.usageCount = currentCount;
     },
     nextStep() {
       this.currentStep++;
+      if (this.currentStep === 7) {
+        this.usageCount++;
+        localStorage.setItem('calculatorUsageCount', this.usageCount.toString());
+      }
     },
     previousStep() {
       if (this.currentStep > 1) {
@@ -85,13 +92,10 @@ export const useCalculatorStore = defineStore('calculator', {
         
         this.characterData = characterData;
         this.sortCharacterData(characterData, 'char', 'asc');
-
-        // When using generic dataset, force generic rates in localization
         this.localization.useGenericRates = true;
         return;
       }
 
-      // When using custom dataset, default to custom language datasets
       this.localization.useGenericRates = false;
 
       const values = Object.values(dataset);
