@@ -45,7 +45,7 @@ const handleNext = () => {
     
   if (invalid.length > 0) {
     invalidWidths.value = new Set(invalid);
-    error.value = 'Please enter valid widths for all characters before proceeding';
+    error.value = 'Some width values are incorrect, review them before continuing';
     return;
   }
   
@@ -69,18 +69,18 @@ const updateCharacterWidth = (char, width) => {
 };
 
 const formatCount = (count) => {
-  return store.useGenericDataset ? '.' : count;
+  return store.useGenericDataset ? '-' : count;
 };
 </script>
 
 <template>
   <div class="max-w-4xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Character Widths</h2>
+    <h2 class="text-2xl font-bold mb-4">Enter character widths</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-6">
         <!-- Character Summary with Width Inputs -->
         <div>
-          <h3 class="text-lg font-semibold mb-4">Enter Character Widths</h3>
+          <h3 class="text-lg font-semibold mb-4">Character widths</h3>
           <div class="overflow-auto max-h-80">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">

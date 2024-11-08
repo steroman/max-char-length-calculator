@@ -1,4 +1,6 @@
 <script setup>
+import ExternalLink from './ExternalLink.vue';
+
 defineProps({
   text: String,
   link: Object
@@ -8,14 +10,12 @@ defineProps({
 <template>
   <p class="mt-1.5 text-xs text-gray-500">
     <template v-if="link">
-      {{ text.split('[Link]')[0] }}
-      <a 
-        :href="link.url" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        class="text-blue-600 hover:text-blue-800 hover:underline"
-      >{{ link.text }}</a>
-      {{ text.split('[Link]')[1] }}
+      <template v-if="text.includes('([Link])')">
+        {{ text.split('([Link])')[0] }}<span class="whitespace-nowrap">(<ExternalLink :href="link.url">{{ link.text }}</ExternalLink>)</span>{{ text.split('([Link])')[1] }}
+      </template>
+      <template v-else>
+        {{ text.split('[Link]')[0] }}<ExternalLink :href="link.url">{{ link.text }}</ExternalLink>{{ text.split('[Link]')[1] }}
+      </template>
     </template>
     <template v-else>
       {{ text }}

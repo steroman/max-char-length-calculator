@@ -6,34 +6,39 @@ const calculateAverageLength = (dataset) => {
   return lengths.reduce((sum, len) => sum + len, 0) / lengths.length;
 };
 
+const initialState = {
+  currentStep: 1,
+  elementWidth: 0,
+  useGenericDataset: false,
+  rawDataset: {},
+  datasetConfig: {
+    ignoreCapitals: false,
+    ignoreNumbers: false,
+    ignoreSymbols: false,
+    ignoreSpaces: false,
+    reduceByTenPercent: true,
+  },
+  characterData: [],
+  mainLanguage: null,
+  selectedLanguageCode: '',
+  localization: {
+    enabled: false,
+    useGenericRates: false,
+    genericExpansionRate: 1.40,
+    languages: [],
+  },
+  maxCharLength: 0,
+  adjustedMaxCharLength: null,
+  reducedMaxCharLength: null,
+};
+
 export const useCalculatorStore = defineStore('calculator', {
-  state: () => ({
-    currentStep: 1,
-    elementWidth: 0,
-    useGenericDataset: false,
-    rawDataset: {},
-    datasetConfig: {
-      ignoreCapitals: false,
-      ignoreNumbers: false,
-      ignoreSymbols: false,
-      ignoreSpaces: false,
-      reduceByTenPercent: true,
-    },
-    characterData: [],
-    mainLanguage: null,
-    selectedLanguageCode: '',
-    localization: {
-      enabled: false,
-      useGenericRates: true,
-      genericExpansionRate: 1.40,
-      languages: [],
-    },
-    maxCharLength: 0,
-    adjustedMaxCharLength: null,
-    reducedMaxCharLength: null,
-  }),
+  state: () => ({ ...initialState }),
 
   actions: {
+    reset() {
+      Object.assign(this, { ...initialState });
+    },
     nextStep() {
       this.currentStep++;
     },
@@ -80,8 +85,14 @@ export const useCalculatorStore = defineStore('calculator', {
         
         this.characterData = characterData;
         this.sortCharacterData(characterData, 'char', 'asc');
+
+        // When using generic dataset, force generic rates in localization
+        this.localization.useGenericRates = true;
         return;
       }
+
+      // When using custom dataset, default to custom language datasets
+      this.localization.useGenericRates = false;
 
       const values = Object.values(dataset);
       const combinedText = values.join(' ');
@@ -114,6 +125,7 @@ export const useCalculatorStore = defineStore('calculator', {
       if (forLanguage) {
         forLanguage.characterData = characterData;
         forLanguage.averageLength = calculateAverageLength(dataset);
+        
         const mainAvgLength = calculateAverageLength(this.rawDataset);
         forLanguage.expansionRate = forLanguage.averageLength / mainAvgLength;
       } else {
@@ -165,8 +177,6 @@ export const useCalculatorStore = defineStore('calculator', {
 
       this.maxCharLength = Math.floor(this.elementWidth / totalFrequencyWidth);
       
-      // Apply 10% reduction if enabled
-
       if (this.datasetConfig.reduceByTenPercent) {
         this.reducedMaxCharLength = Math.floor(this.maxCharLength * 0.9);
       } else {
