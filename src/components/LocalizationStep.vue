@@ -139,20 +139,21 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Localization Settings</h2>
+    <h2 class="text-2xl font-bold mb-4">Set text expansion (Localization)</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
+      <p class="mb-4">The expansion rate determines how much the final character limit is adjusted to account for text expansion caused by localizing to other languages.</p>
       <div class="space-y-6">
         <div>
           <Toggle
             v-model="store.localization.enabled"
-            label="Account for text expansion in other languages"
+            label="Adjust for text expansion in other languages"
           />
         </div>
 
         <template v-if="store.localization.enabled">
           <WarningMessage
             v-if="isGenericDataset"
-            message="Custom language datasets are disabled when using a generic dataset. Please use the generic expansion rates instead."
+            message="Only generic expansion rates are available when using the generic dataset."
           />
 
           <!-- Dataset Type Selection Cards -->
@@ -165,7 +166,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               :disabled="isGenericDataset"
               title="Use generic expansion rates"
             >
-              <HelperText text="These rates are estimated ([Link])" :link="{
+              <HelperText text="Rates are estimated ([Link])" :link="{
                 url: 'https://www.andiamo.co.uk/resources/expansion-and-contraction-factors',
                 text: 'source'
               }" />
@@ -177,7 +178,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               :value="false"
               :selected="!store.localization.useGenericRates"
               :disabled="isGenericDataset"
-              title="Use custom language datasets"
+              title="Upload custom data"
             >
               <HelperText text="JSON files with the localization keys ([Link])" :link="{
                 url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json',
@@ -187,8 +188,8 @@ const isGenericDataset = computed(() => store.useGenericDataset);
           </div>
 
           <div v-if="store.localization.useGenericRates" class="space-y-4">
-            <h3 class="text-lg font-semibold">Select Expansion Rate</h3>
-            <HelperText text="If you're unsure, choose the extra safe option." />
+            <h3 class="text-lg font-semibold">Set expansion rate</h3>
+            <HelperText text="If you're unsure, go with the extra safe option." />
             <div :class="{ 'p-2 rounded bg-red-50': highlightConfig }">
               <select
                 v-model="store.localization.genericExpansionRate"
@@ -207,11 +208,11 @@ const isGenericDataset = computed(() => store.useGenericDataset);
           </div>
 
           <div v-else-if="!isGenericDataset" class="space-y-4">
-            <h3 class="text-lg font-semibold">Language Datasets</h3>
-            <HelperText text="Expansion rate calculated from the most expanding language" />
+            <h3 class="text-lg font-semibold">Languages</h3>
+            <HelperText text="The expansion rate used is that of the most expanding language." />
             
             <div v-if="store.localization.languages.length > 0" class="mb-4">
-              <h4 class="text-sm font-medium text-gray-700 mb-2">Added Languages:</h4>
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Added languages:</h4>
               <div class="space-y-2">
                 <div 
                   v-for="lang in store.localization.languages" 
@@ -240,7 +241,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
             <div v-else class="space-y-4 p-4 bg-gray-50 rounded-lg">
               <div class="flex justify-between items-center mb-4">
-                <h4 class="text-sm font-medium text-gray-700">Add New Language</h4>
+                <h4 class="text-sm font-medium text-gray-700">New language</h4>
                 <button
                   @click="cancelAddingLanguage"
                   class="text-sm text-gray-500 hover:text-gray-700"
@@ -251,7 +252,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Select Language
+                  Language
                 </label>
                 <select
                   v-model="selectedLanguageCode"
@@ -275,7 +276,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
               <div v-if="selectedLanguageCode">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Upload JSON Dataset
+                  Upload JSON file
                 </label>
                 <div :class="{ 'p-2 rounded bg-red-50': highlightDataset }">
                   <input

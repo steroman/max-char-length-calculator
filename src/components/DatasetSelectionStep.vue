@@ -89,10 +89,10 @@ const handlePrevious = () => {
             <SelectionCard
               v-model="store.useGenericDataset"
               :value="true"
-              title="Use generic dataset (English)"
+              title="Use generic data (English)"
             >
               <HelperText 
-                text="Based on standard English letter frequency data from [Link]"
+                text="Based on letter frequency data from [Link]"
                 :link="{
                   url: 'https://en.wikipedia.org/wiki/Letter_frequency',
                   text: 'Wikipedia'
@@ -103,7 +103,7 @@ const handlePrevious = () => {
             <SelectionCard
               v-model="store.useGenericDataset"
               :value="false"
-              title="Upload custom dataset"
+              title="Upload custom data"
             >
               <HelperText 
                 text="A JSON file with the localization keys ([Link])"

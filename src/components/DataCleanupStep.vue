@@ -34,7 +34,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-4">
         <p class="text-gray-600">
-          Select what to include in the dataset
+          Select what to include in the dataset.
         </p>
         <HelperText text="ℹ️ The more options you turn on, the more accurate the dataset, hence the more accurate the results." />
 
