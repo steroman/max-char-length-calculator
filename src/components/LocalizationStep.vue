@@ -6,6 +6,7 @@ import ErrorMessage from './ui/ErrorMessage.vue';
 import WarningMessage from './ui/WarningMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
 import HelperText from './ui/HelperText.vue';
+import SelectionCard from './ui/SelectionCard.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 
@@ -154,45 +155,35 @@ const isGenericDataset = computed(() => store.useGenericDataset);
             message="Custom language datasets are disabled when using a generic dataset. Please use the generic expansion rates instead."
           />
 
-          <div class="space-y-4">
-            <div class="space-y-2">
-              <label class="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  v-model="store.localization.useGenericRates"
-                  :value="true"
-                  class="text-blue-600 focus:ring-blue-500"
-                />
-                <span class="text-sm">Use generic expansion rates</span>
-              </label>
-              <div class="ml-6">
-                <HelperText text="These rates are estimated (source)" :link="{
-                  url: 'https://www.andiamo.co.uk/resources/expansion-and-contraction-factors',
-                  text: 'source'
-                }" />
-              </div>
-            </div>
+          <!-- Dataset Type Selection Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Generic Rates Card -->
+            <SelectionCard
+              v-model="store.localization.useGenericRates"
+              :value="true"
+              :selected="store.localization.useGenericRates"
+              :disabled="isGenericDataset"
+              title="Use generic expansion rates"
+            >
+              <HelperText text="These rates are estimated (source)" :link="{
+                url: 'https://www.andiamo.co.uk/resources/expansion-and-contraction-factors',
+                text: 'source'
+              }" />
+            </SelectionCard>
 
-            <div class="space-y-2">
-              <label class="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  v-model="store.localization.useGenericRates"
-                  :value="false"
-                  :disabled="isGenericDataset"
-                  class="text-blue-600 focus:ring-blue-500"
-                />
-                <span class="text-sm" :class="{ 'opacity-50': isGenericDataset }">
-                  Use custom language datasets
-                </span>
-              </label>
-              <div class="ml-6">
-                <HelperText text="JSON files with the localization keys (example)" :link="{
-                  url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json',
-                  text: 'example'
-                }" />
-              </div>
-            </div>
+            <!-- Custom Datasets Card -->
+            <SelectionCard
+              v-model="store.localization.useGenericRates"
+              :value="false"
+              :selected="!store.localization.useGenericRates"
+              :disabled="isGenericDataset"
+              title="Use custom language datasets"
+            >
+              <HelperText text="JSON files with the localization keys (example)" :link="{
+                url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json',
+                text: 'example'
+              }" />
+            </SelectionCard>
           </div>
 
           <div v-if="store.localization.useGenericRates" class="space-y-4">

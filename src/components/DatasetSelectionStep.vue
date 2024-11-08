@@ -4,9 +4,9 @@ import StepNavigation from './StepNavigation.vue';
 import HelperText from './ui/HelperText.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
+import SelectionCard from './ui/SelectionCard.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
-import { genericDataset } from '../data/genericDataset';
 
 const store = useCalculatorStore();
 const currentFile = ref(null);
@@ -87,97 +87,35 @@ const handlePrevious = () => {
           <!-- Dataset Selection Cards -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Generic Dataset Card -->
-            <div
-              class="relative p-4 border-2 rounded-lg cursor-pointer transition-all duration-200"
-              :class="[
-                store.useGenericDataset
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-              ]"
-              @click="store.useGenericDataset = true"
+            <SelectionCard
+              v-model="store.useGenericDataset"
+              :value="true"
+              :selected="store.useGenericDataset"
+              title="Use generic dataset (English)"
             >
-              <!-- Hidden Radio Button -->
-              <input
-                id="generic-dataset"
-                type="radio"
-                v-model="store.useGenericDataset"
-                :value="true"
-                class="sr-only"
-              />
-              
-              <!-- Card Content -->
-              <div class="space-y-2">
-                <div class="flex items-center">
-                  <div
-                    class="w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center"
-                    :class="[
-                      store.useGenericDataset
-                        ? 'border-blue-500 bg-blue-500'
-                        : 'border-gray-300'
-                    ]"
-                  >
-                    <div
-                      v-if="store.useGenericDataset"
-                      class="w-2 h-2 rounded-full bg-white"
-                    ></div>
-                  </div>
-                  <span class="font-medium">Use generic dataset</span>
-                </div>
-                <p class="text-sm text-gray-600 ml-6">
-                  Based on standard English letter frequency data from 
-                  <ExternalLink
-                    href="https://en.wikipedia.org/wiki/Letter_frequency"
-                  >Wikipedia</ExternalLink>
-                </p>
-              </div>
-            </div>
+              <p class="text-sm text-gray-600">
+                Based on standard English letter frequency data from 
+                <ExternalLink
+                  href="https://en.wikipedia.org/wiki/Letter_frequency"
+                >Wikipedia</ExternalLink>
+              </p>
+            </SelectionCard>
 
             <!-- Custom Dataset Card -->
-            <div
-              class="relative p-4 border-2 rounded-lg cursor-pointer transition-all duration-200"
-              :class="[
-                !store.useGenericDataset
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-              ]"
-              @click="store.useGenericDataset = false"
+            <SelectionCard
+              v-model="store.useGenericDataset"
+              :value="false"
+              :selected="!store.useGenericDataset"
+              title="Upload custom dataset"
             >
-              <!-- Hidden Radio Button -->
-              <input
-                id="custom-dataset"
-                type="radio"
-                v-model="store.useGenericDataset"
-                :value="false"
-                class="sr-only"
-              />
-              
-              <!-- Card Content -->
-              <div class="space-y-2">
-                <div class="flex items-center">
-                  <div
-                    class="w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center"
-                    :class="[
-                      !store.useGenericDataset
-                        ? 'border-blue-500 bg-blue-500'
-                        : 'border-gray-300'
-                    ]"
-                  >
-                    <div
-                      v-if="!store.useGenericDataset"
-                      class="w-2 h-2 rounded-full bg-white"
-                    ></div>
-                  </div>
-                  <span class="font-medium">Upload custom dataset</span>
-                </div>
-                <p class="text-sm text-gray-600 ml-6">
-                  A JSON file with the localization keys (
-                  <ExternalLink
-                    href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json"
-                  >example</ExternalLink>
-                  )
-                </p>
-              </div>
-            </div>
+              <p class="text-sm text-gray-600">
+                A JSON file with the localization keys (
+                <ExternalLink
+                  href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json"
+                >example</ExternalLink>
+                )
+              </p>
+            </SelectionCard>
           </div>
 
           <!-- Language Selection -->
