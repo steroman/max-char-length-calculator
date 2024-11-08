@@ -80,8 +80,14 @@ export const useCalculatorStore = defineStore('calculator', {
         
         this.characterData = characterData;
         this.sortCharacterData(characterData, 'char', 'asc');
+
+        // When using generic dataset, force generic rates in localization
+        this.localization.useGenericRates = true;
         return;
       }
+
+      // When using custom dataset, default to custom language datasets
+      this.localization.useGenericRates = false;
 
       const values = Object.values(dataset);
       const combinedText = values.join(' ');

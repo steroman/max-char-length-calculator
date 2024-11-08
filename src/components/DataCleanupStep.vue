@@ -21,6 +21,7 @@ const updateConfig = () => {
 };
 
 const isGenericDataset = computed(() => store.useGenericDataset);
+
 // Watch for changes in useGenericDataset and update reduceByTenPercent accordingly
 watch(() => store.useGenericDataset, (isGeneric) => {
   store.datasetConfig.reduceByTenPercent = isGeneric;
@@ -79,9 +80,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
               @update:modelValue="updateConfig"
             />
             <HelperText 
-              :text="isGenericDataset 
-                ? 'Automatically turned on for generic datasets' 
-                : 'Optional for custom datasets'"
+              text="Recommended when using the generic dataset"
             />
           </div>
         </div>
