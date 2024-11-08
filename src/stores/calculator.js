@@ -6,34 +6,39 @@ const calculateAverageLength = (dataset) => {
   return lengths.reduce((sum, len) => sum + len, 0) / lengths.length;
 };
 
+const initialState = {
+  currentStep: 1,
+  elementWidth: 0,
+  useGenericDataset: false,
+  rawDataset: {},
+  datasetConfig: {
+    ignoreCapitals: false,
+    ignoreNumbers: false,
+    ignoreSymbols: false,
+    ignoreSpaces: false,
+    reduceByTenPercent: true,
+  },
+  characterData: [],
+  mainLanguage: null,
+  selectedLanguageCode: '',
+  localization: {
+    enabled: false,
+    useGenericRates: false,
+    genericExpansionRate: 1.40,
+    languages: [],
+  },
+  maxCharLength: 0,
+  adjustedMaxCharLength: null,
+  reducedMaxCharLength: null,
+};
+
 export const useCalculatorStore = defineStore('calculator', {
-  state: () => ({
-    currentStep: 1,
-    elementWidth: 0,
-    useGenericDataset: false,
-    rawDataset: {},
-    datasetConfig: {
-      ignoreCapitals: false,
-      ignoreNumbers: false,
-      ignoreSymbols: false,
-      ignoreSpaces: false,
-      reduceByTenPercent: true,
-    },
-    characterData: [],
-    mainLanguage: null,
-    selectedLanguageCode: '',
-    localization: {
-      enabled: false,
-      useGenericRates: false,
-      genericExpansionRate: 1.40,
-      languages: [],
-    },
-    maxCharLength: 0,
-    adjustedMaxCharLength: null,
-    reducedMaxCharLength: null,
-  }),
+  state: () => ({ ...initialState }),
 
   actions: {
+    reset() {
+      Object.assign(this, { ...initialState });
+    },
     nextStep() {
       this.currentStep++;
     },

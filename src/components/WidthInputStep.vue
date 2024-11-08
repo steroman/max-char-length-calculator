@@ -19,6 +19,10 @@ const validateWidth = (value) => {
   if (isNaN(numWidth)) {
     return 'Enter a valid number';
   }
+
+  if (!Number.isInteger(numWidth)) {
+    return 'The width must be a whole number';
+  }
   
   if (numWidth <= 0) {
     return numWidth === 0 ? 'The width cannot be zero' : 'The width must be greater than 0';
@@ -71,6 +75,7 @@ const handleBlur = () => {
           @input="handleInput"
           @blur="handleBlur"
           min="1"
+          step="1"
           :class="[
             'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',
             error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
