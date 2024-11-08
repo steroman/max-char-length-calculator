@@ -126,23 +126,24 @@ const toggleCharacterSummary = () => {
 
 <template>
   <div class="max-w-4xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Final Results</h2>
+    <h2 class="text-2xl font-bold mb-4">Results</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div v-if="!allWidthsEntered" class="mb-6 p-4 bg-yellow-50 rounded-lg">
         <p class="text-yellow-800">
-          Please ensure all character widths are entered before viewing results.
+          Make sure all character widths are entered before viewing results.
         </p>
       </div>
 
       <div v-else class="space-y-8">
         <!-- Main Result -->
         <div class="text-center p-6 bg-blue-50 rounded-lg">
-          <h3 class="text-xl font-semibold text-blue-900 mb-2">Maximum Character Length</h3>
-          <p class="text-4xl font-bold text-blue-900 mb-1">
+          <h3 class="text-xl font-semibold text-blue-900 mb-1">Maximum character length</h3>
+          <p class="text-sm text-blue-800">for an element of <span class="font-semibold">{{ store.elementWidth }}</span> pixels</p>
+          <p class="text-4xl font-bold text-blue-900 mb-1 mt-2">
             {{ getMainResult.value }} characters
           </p>
           <p v-if="getMainResult.exact" class="text-sm text-blue-800">
-            rounded down from {{ getMainResult.exact }}
+            adjusted from {{ getMainResult.exact }}
           </p>
           
           <!-- Secondary Results -->
@@ -150,7 +151,7 @@ const toggleCharacterSummary = () => {
             <p v-for="(result, index) in getSecondaryResults" :key="index">
               Before {{ result.label }}: <span class="font-semibold">{{ result.value }}</span> characters
               <template v-if="result.exact">
-                (rounded down from {{ result.exact }})
+                (adjusted from {{ result.exact }})
               </template>
             </p>
           </div>
@@ -160,9 +161,8 @@ const toggleCharacterSummary = () => {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Main Language Info -->
           <div class="p-4 bg-gray-50 rounded-lg">
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Main Language Information</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Main language info</h3>
             <ul class="list-disc ml-6 text-gray-700 text-sm">
-              <li>Element width: <span class="font-semibold">{{ store.elementWidth }}</span> pixels</li>
               <li>Language: <span class="font-semibold">{{ languages.find(l => l.code === store.selectedLanguageCode)?.name }}</span></li>
               <li>Total unique characters: <span class="font-semibold">{{ store.characterData.length }}</span></li>
               <li>Average character width: <span class="font-semibold">{{ (store.characterData.reduce((sum, char) => sum + (char.width || 0), 0) / store.characterData.length).toFixed(2) }}</span> pixels</li>
@@ -171,7 +171,7 @@ const toggleCharacterSummary = () => {
 
           <!-- Localization Info -->
           <div v-if="store.localization.enabled" class="p-4 bg-green-50 rounded-lg">
-            <h3 class="text-lg font-semibold text-green-900 mb-2">Localization Information</h3>
+            <h3 class="text-lg font-semibold text-green-900 mb-2">Localization info</h3>
             <div class="space-y-4 text-sm">
               <template v-if="store.localization.useGenericRates">
                 <p class="text-green-800">
@@ -187,7 +187,7 @@ const toggleCharacterSummary = () => {
 
                 <!-- Language Details -->
                 <div class="text-green-800">
-                  <p class="font-medium mb-2">Localization dataset info:</p>
+                  <p class="font-medium mb-2">Localization data:</p>
                   <div v-for="lang in store.localization.languages" :key="lang.code" class="ml-4 mb-2">
                     <p class="font-medium">{{ lang.name }}:</p>
                     <ul class="list-disc ml-6">
@@ -207,7 +207,7 @@ const toggleCharacterSummary = () => {
             @click="toggleCharacterSummary"
             class="w-full px-4 py-2 text-left font-medium flex items-center justify-between hover:bg-gray-50 focus:outline-none"
           >
-            <span>Character Summary</span>
+            <span>Character summary</span>
             <svg
               class="w-5 h-5 transform transition-transform"
               :class="{ 'rotate-180': isCharacterSummaryOpen }"
