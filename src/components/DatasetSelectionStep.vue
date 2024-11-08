@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import HelperText from './ui/HelperText.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
+import ExternalLink from './ui/ExternalLink.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 import { genericDataset } from '../data/genericDataset';
@@ -108,17 +109,28 @@ const handlePrevious = () => {
               </div>
             </div>
 
-            <div class="flex items-center space-x-3">
-              <input
-                id="custom-dataset"
-                type="radio"
-                v-model="store.useGenericDataset"
-                :value="false"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500"
-              />
-              <label for="custom-dataset" class="text-sm font-medium text-gray-700">
-                Upload custom dataset
-              </label>
+            <div class="space-y-2">
+              <div class="flex items-center space-x-3">
+                <input
+                  id="custom-dataset"
+                  type="radio"
+                  v-model="store.useGenericDataset"
+                  :value="false"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                />
+                <label for="custom-dataset" class="text-sm font-medium text-gray-700">
+                  Upload custom dataset
+                </label>
+              </div>
+              <div class="ml-7">
+                <p class="text-xs text-gray-500">
+                  A JSON file with the localization keys (
+                  <ExternalLink
+                    href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json"
+                  >example</ExternalLink>
+                  )
+                </p>
+              </div>
             </div>
           </div>
 

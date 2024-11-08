@@ -4,6 +4,7 @@ import StepNavigation from './StepNavigation.vue';
 import Toggle from './ui/Toggle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import WarningMessage from './ui/WarningMessage.vue';
+import ExternalLink from './ui/ExternalLink.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 
@@ -164,7 +165,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
                 <span class="text-sm">Use generic expansion rates</span>
               </label>
             </div>
-            <div>
+            <div class="space-y-2">
               <label class="flex items-center space-x-2">
                 <input
                   type="radio"
@@ -177,6 +178,15 @@ const isGenericDataset = computed(() => store.useGenericDataset);
                   Use custom language datasets
                 </span>
               </label>
+              <div class="ml-6">
+                <p class="text-xs text-gray-500">
+                  A JSON file with the localization keys (
+                  <ExternalLink
+                    href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json"
+                  >example</ExternalLink>
+                  )
+                </p>
+              </div>
             </div>
           </div>
 
