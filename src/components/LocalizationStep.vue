@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import Toggle from './ui/Toggle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
@@ -165,7 +165,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               :disabled="isGenericDataset"
               title="Use generic expansion rates"
             >
-              <HelperText text="These rates are estimated (source)" :link="{
+              <HelperText text="These rates are estimated ([Link])" :link="{
                 url: 'https://www.andiamo.co.uk/resources/expansion-and-contraction-factors',
                 text: 'source'
               }" />
@@ -179,7 +179,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               :disabled="isGenericDataset"
               title="Use custom language datasets"
             >
-              <HelperText text="JSON files with the localization keys (example)" :link="{
+              <HelperText text="JSON files with the localization keys ([Link])" :link="{
                 url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json',
                 text: 'example'
               }" />

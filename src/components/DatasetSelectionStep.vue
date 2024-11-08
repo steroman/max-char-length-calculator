@@ -3,10 +3,10 @@ import { ref, watch } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import HelperText from './ui/HelperText.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
-import ExternalLink from './ui/ExternalLink.vue';
 import SelectionCard from './ui/SelectionCard.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
+import { genericDataset } from '../data/genericDataset';
 
 const store = useCalculatorStore();
 const currentFile = ref(null);
@@ -83,38 +83,35 @@ const handlePrevious = () => {
     <h2 class="text-2xl font-bold mb-4">Select Dataset</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="mb-6">
-        <div class="space-y-4">
-          <!-- Dataset Selection Cards -->
+        <div class="space-y-6">
+          <!-- Dataset Type Selection Cards -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Generic Dataset Card -->
             <SelectionCard
               v-model="store.useGenericDataset"
               :value="true"
-              :selected="store.useGenericDataset"
               title="Use generic dataset (English)"
             >
-              <p class="text-sm text-gray-600">
-                Based on standard English letter frequency data from 
-                <ExternalLink
-                  href="https://en.wikipedia.org/wiki/Letter_frequency"
-                >Wikipedia</ExternalLink>
-              </p>
+              <HelperText 
+                text="Based on standard English letter frequency data from [Link]"
+                :link="{
+                  url: 'https://en.wikipedia.org/wiki/Letter_frequency',
+                  text: 'Wikipedia'
+                }"
+              />
             </SelectionCard>
 
-            <!-- Custom Dataset Card -->
             <SelectionCard
               v-model="store.useGenericDataset"
               :value="false"
-              :selected="!store.useGenericDataset"
               title="Upload custom dataset"
             >
-              <p class="text-sm text-gray-600">
-                A JSON file with the localization keys (
-                <ExternalLink
-                  href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json"
-                >example</ExternalLink>
-                )
-              </p>
+              <HelperText 
+                text="A JSON file with the localization keys ([Link])"
+                :link="{
+                  url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-en.json',
+                  text: 'example'
+                }"
+              />
             </SelectionCard>
           </div>
 
