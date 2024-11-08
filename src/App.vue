@@ -9,6 +9,7 @@ import CharacterWidthStep from './components/CharacterWidthStep.vue';
 import LocalizationStep from './components/LocalizationStep.vue';
 import ResultsStep from './components/ResultsStep.vue';
 import Footer from './components/ui/Footer.vue';
+import Header from './components/ui/Header.vue';
 
 const store = useCalculatorStore();
 
@@ -36,6 +37,7 @@ const getCurrentStep = computed(() => {
 
 <template>
   <div class="min-h-screen bg-gray-100">
+    <Header />
     <main class="pb-20">
       <component :is="getCurrentStep" />
     </main>

@@ -13,9 +13,9 @@ const handleNext = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-4">📐 Maximum character length calculator 🧮</h1>
+          <h1 class="text-2xl font-bold mb-4">👋 Welcome</h1>
+
     <div class="bg-white rounded-lg shadow-md p-6">
-      <p class="mb-4">👋 Welcome,</p>
       <p class="mb-4">
         This tool calculates the maximum character length for a given UI element based on real data.
         You'll need:
@@ -27,7 +27,7 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>(Optional) A JSON file with existing keys of the UI element. For example, all the keys of a button. If you don't have it, a generic dataset is available.</span>
+          <span>(Optional) A JSON file with existing keys of the UI element. For example, all the keys of a button.</span>
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
@@ -35,9 +35,10 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>(Optional) JSON files for the localization keys in other languages. For example, all the keys of the button in Italian. If you don't have them, a generic dataset is available.</span>
+          <span>(Optional) JSON files for the localization keys in other languages. For example, all the keys of the button in Italian.</span>
         </li>
       </ul>
+      <p class="mb-4">Worry not! If you don't have the JSON files of your keys, you can use the available generic dataset.</p>
       <p class="mb-4">
         ⏳ Let's get started…
       </p>
