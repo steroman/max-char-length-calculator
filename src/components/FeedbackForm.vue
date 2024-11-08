@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import emailjs from '@emailjs/browser';
 import Modal from './ui/Modal.vue';
 import ExternalLink from './ui/ExternalLink.vue';
+import ErrorMessage from './ui/ErrorMessage.vue';
 
 const props = defineProps({
   isOpen: {
@@ -20,6 +21,8 @@ const email = ref('');
 const error = ref('');
 const isSubmitting = ref(false);
 const success = ref(false);
+const highlightType = ref(false);
+const highlightMessage = ref(false);
 
 const feedbackTypes = [
   { value: 'bug', label: 'Report a bug' },
@@ -29,6 +32,9 @@ const feedbackTypes = [
 ];
 
 const handleSubmit = async () => {
+  highlightType.value = !feedbackType.value;
+  highlightMessage.value = !message.value;
+
   if (!feedbackType.value || !message.value) {
     error.value = 'Fill in all required fields';
     return;
@@ -61,6 +67,8 @@ const handleSubmit = async () => {
       name.value = '';
       email.value = '';
       success.value = false;
+      highlightType.value = false;
+      highlightMessage.value = false;
     }, 2000);
   } catch (e) {
     console.error('Feedback submission error:', e);
@@ -90,7 +98,8 @@ const handleSubmit = async () => {
         </label>
         <select
           v-model="feedbackType"
-          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500"
+          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2"
+          :class="highlightType ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'"
           required
         >
           <option value="">Select a type</option>
@@ -112,7 +121,8 @@ const handleSubmit = async () => {
         <textarea
           v-model="message"
           rows="4"
-          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500"
+          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2"
+          :class="highlightMessage ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'"
           required
         ></textarea>
       </div>
@@ -145,7 +155,7 @@ const handleSubmit = async () => {
       </div>
 
       <!-- Error Message -->
-      <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+      <ErrorMessage :message="error" />
 
       <!-- Success Message -->
       <p v-if="success" class="text-sm text-green-600">
