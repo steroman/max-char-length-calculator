@@ -30,18 +30,19 @@ watch(() => store.useGenericDataset, (isGeneric) => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Configure Data Cleanup</h2>
+    <h2 class="text-2xl font-bold mb-4">Configure data cleanup</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-4">
         <p class="text-gray-600">
-          The more options you turn on, the more accurate the dataset, hence the more accurate the results.
+          Select what to include in the dataset
         </p>
+        <HelperText text="ℹ️ The more options you turn on, the more accurate the dataset, hence the more accurate the results." />
 
-        <h3 class="text-lg font-semibold mb-4">Cleanup Options</h3>
+        <h3 class="text-lg font-semibold mb-4">Cleanup options</h3>
         
         <WarningMessage
           v-if="isGenericDataset"
-          message="Cleanup options are disabled when using a generic dataset as the data is pre-processed."
+          message="Cleanup options are unavailable when using a generic dataset because they are not applicable"
         />
 
         <div class="space-y-6">
@@ -85,7 +86,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
               @update:modelValue="updateConfig"
             />
             <HelperText 
-              text="Recommended when using the generic dataset to compensate for inaccuracy"
+              text="To compensate for inaccuracy (Recommended when using the generic dataset)"
             />
           </div>
         </div>
