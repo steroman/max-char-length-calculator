@@ -11,6 +11,7 @@ const initialState = {
   elementWidth: 0,
   useGenericDataset: false,
   rawDataset: {},
+  usageCount: 0,
   datasetConfig: {
     ignoreCapitals: false,
     ignoreNumbers: false,
@@ -37,10 +38,23 @@ export const useCalculatorStore = defineStore('calculator', {
 
   actions: {
     reset() {
+      const currentCount = this.usageCount;
       Object.assign(this, { ...initialState });
+      this.usageCount = currentCount;
     },
     nextStep() {
       this.currentStep++;
+      if (this.currentStep === 7) {
+        this.usageCount++;
+        localStorage.setItem('calculatorUsageCount', this.usageCount.toString());
+        // Track completion event in GA4
+        if (window.gtag) {
+          window.gtag('event', 'calculation_complete', {
+            'event_category': 'Calculator',
+            'event_label': 'Character Length Calculation'
+          });
+        }
+      }
     },
     previousStep() {
       if (this.currentStep > 1) {
@@ -85,13 +99,10 @@ export const useCalculatorStore = defineStore('calculator', {
         
         this.characterData = characterData;
         this.sortCharacterData(characterData, 'char', 'asc');
-
-        // When using generic dataset, force generic rates in localization
         this.localization.useGenericRates = true;
         return;
       }
 
-      // When using custom dataset, default to custom language datasets
       this.localization.useGenericRates = false;
 
       const values = Object.values(dataset);
