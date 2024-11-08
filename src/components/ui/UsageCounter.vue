@@ -9,6 +9,6 @@ defineProps({
 
 <template>
   <div class="text-center text-sm">
-    Max length was calculated {{ count }} times with this app ♥️
+    This app calculated max length {{ count }} times  ♥️
   </div>
 </template>
