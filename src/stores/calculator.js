@@ -6,6 +6,18 @@ const calculateAverageLength = (dataset) => {
   return lengths.reduce((sum, len) => sum + len, 0) / lengths.length;
 };
 
+const extractTranslations = (data) => {
+  const translations = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (typeof value === 'object' && value !== null && 'translation' in value) {
+      translations[key] = value.translation;
+    } else if (typeof value === 'string') {
+      translations[key] = value;
+    }
+  }
+  return translations;
+};
+
 const initialState = {
   currentStep: 1,
   elementWidth: 0,
@@ -108,7 +120,9 @@ export const useCalculatorStore = defineStore('calculator', {
       // When using custom dataset, default to custom language datasets
       this.localization.useGenericRates = false;
 
-      const values = Object.values(dataset);
+      // Extract translations from structured or flat JSON
+      const translations = extractTranslations(dataset);
+      const values = Object.values(translations);
       const combinedText = values.join(' ');
       
       const charCount = new Map();
@@ -138,12 +152,12 @@ export const useCalculatorStore = defineStore('calculator', {
 
       if (forLanguage) {
         forLanguage.characterData = characterData;
-        forLanguage.averageLength = calculateAverageLength(dataset);
+        forLanguage.averageLength = calculateAverageLength(translations);
         
         const mainAvgLength = calculateAverageLength(this.rawDataset);
         forLanguage.expansionRate = forLanguage.averageLength / mainAvgLength;
       } else {
-        this.rawDataset = dataset;
+        this.rawDataset = translations;
         this.characterData = characterData;
       }
 

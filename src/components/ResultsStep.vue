@@ -1,15 +1,11 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 
 const store = useCalculatorStore();
 const isCharacterSummaryOpen = ref(false);
-
-const allWidthsEntered = computed(() => {
-  return store.characterData.every(char => char.width !== undefined && char.width > 0);
-});
 
 // Calculate results when component is mounted
 store.calculateResults();
@@ -64,21 +60,17 @@ const getSecondaryResults = computed(() => {
   const exactMax = store.elementWidth / totalFrequencyWidth;
   const baseResult = formatLength(store.maxCharLength, exactMax);
 
-  // If we're showing the localized result as main
   if (store.adjustedMaxCharLength !== null) {
     if (store.datasetConfig.reduceByTenPercent) {
-      // Show the original result first
       results.push({
         label: 'generic dataset adjustment (-10%)',
         value: store.maxCharLength,
         exact: Number(exactMax).toFixed(2)
       });
       
-      // Then show the reduced result
       const exactReduced = store.maxCharLength * 0.9;
       const reducedResult = formatLength(store.reducedMaxCharLength, exactReduced);
       
-      // Finally show the expansion rate
       const expansionRate = store.localization.useGenericRates 
         ? store.localization.genericExpansionRate 
         : Math.max(...store.localization.languages.map(lang => lang.expansionRate), 1);
@@ -88,7 +80,6 @@ const getSecondaryResults = computed(() => {
         exact: Number(exactReduced).toFixed(2)
       });
     } else {
-      // If no reduction, just show the original and expansion
       const expansionRate = store.localization.useGenericRates 
         ? store.localization.genericExpansionRate 
         : Math.max(...store.localization.languages.map(lang => lang.expansionRate), 1);
@@ -99,7 +90,6 @@ const getSecondaryResults = computed(() => {
       });
     }
   }
-  // If we're showing the reduced result as main
   else if (store.datasetConfig.reduceByTenPercent && store.reducedMaxCharLength !== null) {
     results.push({
       label: 'generic dataset adjustment (-10%)',
@@ -122,6 +112,12 @@ const getLanguageWithHighestExpansion = computed(() => {
   return store.localization.languages.reduce((highest, current) => {
     return !highest || current.expansionRate > highest.expansionRate ? current : highest;
   }, null);
+});
+
+const getAverageLength = computed(() => {
+  if (store.useGenericDataset) return '-';
+  const values = Object.values(store.rawDataset);
+  return (values.reduce((sum, str) => sum + str.length, 0) / values.length).toFixed(2);
 });
 
 const toggleCharacterSummary = () => {
@@ -165,6 +161,7 @@ const toggleCharacterSummary = () => {
               <li>Language: <span class="font-semibold">{{ languages.find(l => l.code === store.selectedLanguageCode)?.name }}</span></li>
               <li>Total unique characters: <span class="font-semibold">{{ store.characterData.length }}</span></li>
               <li>Average character width: <span class="font-semibold">{{ (store.characterData.reduce((sum, char) => sum + (char.width || 0), 0) / store.characterData.length).toFixed(2) }}</span> pixels</li>
+              <li>Average string length: <span class="font-semibold">{{ getAverageLength }}</span> characters</li>
             </ul>
           </div>
 
