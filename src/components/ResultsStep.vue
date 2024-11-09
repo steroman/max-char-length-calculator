@@ -133,13 +133,7 @@ const toggleCharacterSummary = () => {
   <div class="max-w-4xl mx-auto p-6">
     <h2 class="text-2xl font-bold mb-4">Results</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
-      <div v-if="!allWidthsEntered" class="mb-6 p-4 bg-yellow-50 rounded-lg">
-        <p class="text-yellow-800">
-          Make sure all character widths are entered before viewing results.
-        </p>
-      </div>
-
-      <div v-else class="space-y-8">
+      <div class="space-y-8">
         <!-- Main Result -->
         <div class="text-center p-6 bg-blue-50 rounded-lg">
           <h3 class="text-xl font-semibold text-blue-900 mb-1">Maximum character length</h3>
