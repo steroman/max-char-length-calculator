@@ -45,13 +45,14 @@ When using custom datasets, users can apply the following filters:
 
 This application is built using modern web development tools:
 
-- **[EmailJS](https://www.emailjs.com/)** – For email integration.
-- **[Vite](https://vitejs.dev/)** – Fast build tool and development environment.
-- **[Vue](https://vuejs.org/)** – Reactive JavaScript framework.
-- **[TailwindCSS](https://tailwindcss.com/)** – Utility-first CSS framework.
-- **[Pinia](https://pinia.vuejs.org/)** – State management library for Vue.
-- **[Vue Router](https://router.vuejs.org/)** – Official router for Vue.
-- **[Netlify](https://www.netlify.com/)** – Platform for deployment and hosting.
+- **[Vite](https://vitejs.dev/)** – Fast build tool and development environment
+- **[Vue](https://vuejs.org/)** – Reactive JavaScript framework
+- **[TailwindCSS](https://tailwindcss.com/)** – Utility-first CSS framework
+- **[Pinia](https://pinia.vuejs.org/)** – State management library for Vue
+- **[Vue Router](https://router.vuejs.org/)** – Official router for Vue
+- **[Netlify](https://www.netlify.com/)** – Platform for deployment and hosting
+- **[EmailJS](https://www.emailjs.com/)** – For feedback form emails
+- **[OpenType.js](https://opentype.js.org/)** – For automatic character width calculation (more info)
 
 ### Data sources
 
@@ -60,6 +61,38 @@ The app leverages reliable sources for linguistic data and UI standards:
 - **Code built with Bolt** – [Bolt](https://www.bolt.new)
 - **Language list** – [Provided by eddieoz on GitHub](https://gist.github.com/eddieoz/63d839c8a20ef508cfa4fa9562632a21)
 - **Text expansion rates** – [Andiamo.co.uk](https://www.andiamo.co.uk/resources/expansion-and-contraction-factors/)
+
+### Automatic character width calculation
+
+The app can automatically calculate the width of each character in the dataset using the [OpenType.js](https://opentype.js.org/) library.
+
+> ℹ️ The OpenType.js library and your design tool render fonts differently, so the character widths may differ slightly.
+
+#### Font metrics
+
+- Each font file contains a property called unitsPerEm (units per em square)
+- This is the grid size the font was designed on (typically 1000 or 2048 units)
+- Each glyph (character) has an advanceWidth property measured in these units
+
+#### Width calculation process
+
+For example, if:
+
+- Font size is 16px
+- unitsPerEm is 1000
+- A character's advanceWidth is 500 units
+
+Then:
+
+- pixelsPerUnit = 16/1000 = 0.016
+- Final width = 500 * 0.016 = 8 pixels
+
+#### Additional factors
+
+- We apply a 1.05 multiplier to account for font rendering differences
+- The result is rounded to the nearest pixel since screens can't display partial pixels
+- Some fonts include extra spacing in their metrics for better rendering
+- This calculation gives us the actual space a character occupies in the specified font size, including its sidebearings (spacing on either side of the visible glyph).
 
 ## Usage
 
