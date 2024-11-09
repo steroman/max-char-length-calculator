@@ -175,9 +175,12 @@ const toggleCharacterSummary = () => {
           </div>
 
           <!-- Localization Info -->
-          <div v-if="store.localization.enabled" class="p-4 bg-green-50 rounded-lg">
+          <div class="p-4 bg-green-50 rounded-lg">
             <h3 class="text-lg font-semibold text-green-900 mb-2">Localization info</h3>
-            <div class="space-y-4 text-sm">
+            <div v-if="!store.localization.enabled" class="text-green-800">
+              <p>No localization adjustment configured</p>
+            </div>
+            <div v-else class="space-y-4 text-sm">
               <template v-if="store.localization.useGenericRates">
                 <p class="text-green-800">
                   Using generic expansion rate: <span class="font-semibold">{{ ((store.localization.genericExpansionRate - 1) * 100).toFixed(0) }}%</span>
