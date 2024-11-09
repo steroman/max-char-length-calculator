@@ -25,7 +25,8 @@ Here, the **average character width** is derived by averaging the widths of all 
 
 To complete the calculation, users should provide:
 
-1. **Dataset as a JSON file** – Supply character frequency and width data in JSON format. You can refer to a [sample file](https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json) to understand the required structure.
+1. **Dataset as a JSON file** – Supply character frequency and width data in JSON format.
+   - Supports [flat](https://docs.lokalise.com/en/articles/1400771-json-flat-json) and [structured](https://docs.lokalise.com/en/articles/3229161-structured-json) JSON files
    - Alternatively, use the default generic dataset (Note: currently supports only English as the source language).
 2. **UI Element Width** – Input the width of the target UI element in pixels, minus any padding or margin.
 3. **Character Widths** – Specify the width in pixels for each character.
