@@ -4,6 +4,8 @@
 
 This tool calculates the maximum allowable character length for UI elements like buttons and labels, based on real data. It is designed to help UX/UI designers optimize text lengths for readability and consistency across languages and screen sizes. The calculator is based on the formula and approach detailed in [this article](https://uxcontent.com/a-formula-for-defining-maximum-character-lengths/).
 
+> The app stores no user data. The only data stored is the number of times the calculator has been used.
+
 ## Table of Contents
 
 - [Formula overview](#formula-overview)
