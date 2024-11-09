@@ -4,7 +4,7 @@ import StepNavigation from './StepNavigation.vue';
 import HelperText from './ui/HelperText.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import SelectionCard from './ui/SelectionCard.vue';
-import JsonFileUpload from './ui/JsonFileUpload.vue';
+import FileUpload from './ui/FileUpload.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 import { genericDataset } from '../data/genericDataset';
@@ -137,9 +137,12 @@ const handlePrevious = () => {
           </div>
 
           <div v-if="!store.useGenericDataset && store.selectedLanguageCode">
-            <JsonFileUpload
+            <FileUpload
               v-model="currentFile"
               :highlight="highlightDataset"
+              title="Upload JSON file"
+              helper-text="Supports flat and structured JSON"
+              accept=".json"
               @file-loaded="handleFileLoaded"
             />
           </div>

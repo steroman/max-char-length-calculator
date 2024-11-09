@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { ref, computed } from 'vue';
+import FileUpload from './ui/FileUpload.vue';
 import StepNavigation from './StepNavigation.vue';
 import Toggle from './ui/Toggle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
@@ -7,7 +8,6 @@ import WarningMessage from './ui/WarningMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
 import HelperText from './ui/HelperText.vue';
 import SelectionCard from './ui/SelectionCard.vue';
-import JsonFileUpload from './ui/JsonFileUpload.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 
