@@ -7,6 +7,7 @@ import WarningMessage from './ui/WarningMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
 import HelperText from './ui/HelperText.vue';
 import SelectionCard from './ui/SelectionCard.vue';
+import JsonFileUpload from './ui/JsonFileUpload.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
 
@@ -57,6 +58,33 @@ const cancelAddingLanguage = () => {
   highlightDataset.value = false;
 };
 
+const handleFileLoaded = (dataset) => {
+  if (dataset === null) {
+    error.value = 'Invalid JSON file. Please check the file format';
+    highlightDataset.value = true;
+    currentFile.value = null;
+    return;
+  }
+
+  const language = {
+    code: selectedLanguageCode.value,
+    name: languages.find(l => l.code === selectedLanguageCode.value)?.name || '',
+    dataset,
+    averageLength: 0,
+    expansionRate: 0,
+    characterData: [],
+  };
+  
+  store.processDataset(dataset, language);
+  store.addLocalizationLanguage(language);
+  
+  isAddingLanguage.value = false;
+  selectedLanguageCode.value = '';
+  currentFile.value = null;
+  error.value = '';
+  highlightDataset.value = false;
+};
+
 const handleNext = () => {
   highlightConfig.value = false;
   highlightLanguage.value = false;
@@ -96,42 +124,6 @@ const handleNext = () => {
 
 const handlePrevious = () => {
   store.previousStep();
-};
-
-const handleFileChange = async (event) => {
-  const input = event.target;
-  if (input.files && input.files[0] && selectedLanguageCode.value) {
-    currentFile.value = input.files[0];
-    error.value = '';
-    highlightDataset.value = false;
-    
-    try {
-      const text = await currentFile.value.text();
-      const dataset = JSON.parse(text);
-      
-      const language = {
-        code: selectedLanguageCode.value,
-        name: languages.find(l => l.code === selectedLanguageCode.value)?.name || '',
-        dataset,
-        averageLength: 0,
-        expansionRate: 0,
-        characterData: [],
-      };
-      
-      store.processDataset(dataset, language);
-      store.addLocalizationLanguage(language);
-      
-      isAddingLanguage.value = false;
-      selectedLanguageCode.value = '';
-      currentFile.value = null;
-      if (input.value) input.value = '';
-    } catch (e) {
-      error.value = 'Invalid JSON file. Please check the file format';
-      highlightDataset.value = true;
-      if (input.value) input.value = '';
-      currentFile.value = null;
-    }
-  }
 };
 
 const isGenericDataset = computed(() => store.useGenericDataset);
@@ -275,24 +267,11 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               </div>
 
               <div v-if="selectedLanguageCode">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Upload JSON file
-                </label>
-                <div :class="{ 'p-2 rounded bg-red-50': highlightDataset }">
-                  <input
-                    type="file"
-                    accept=".json"
-                    @change="handleFileChange"
-                    :class="[
-                      'block w-full text-sm text-gray-500',
-                      'file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0',
-                      'file:text-sm file:font-semibold',
-                      highlightDataset 
-                        ? 'file:bg-red-50 file:text-red-700 hover:file:bg-red-100'
-                        : 'file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
-                    ]"
-                  />
-                </div>
+                <JsonFileUpload
+                  v-model="currentFile"
+                  :highlight="highlightDataset"
+                  @file-loaded="handleFileLoaded"
+                />
               </div>
             </div>
           </div>
