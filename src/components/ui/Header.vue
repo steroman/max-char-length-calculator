@@ -19,7 +19,7 @@ const handleTitleClick = () => {
         >
           <span class="inline-flex items-center gap-1 break-words">
             <span>📐</span>
-            <span>Max character length calculator</span>
+            <span>Max char length calculator</span>
           </span>
         </button>
         <div class="text-sm text-gray-500 whitespace-nowrap">
