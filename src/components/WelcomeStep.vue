@@ -54,7 +54,7 @@ const handleNext = () => {
       <StepNavigation @next="handleNext" />
     </div>
     <div class="mt-4">
-      <WarningMessage message="None of your data is stored." class="text-center"/>
+      <WarningMessage message="🛡️ None of your data is stored." class="text-center"/>
     </div>
     <UsageCounter :count="store.usageCount" class="mb-4" />
   </div>
