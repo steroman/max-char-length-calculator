@@ -39,7 +39,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Configure data cleanup</h2>
+    <h2 class="text-2xl font-bold mb-4">Configure character cleanup</h2>
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-4">
         <h3 class="text-lg font-semibold mb-4">Cleanup options</h3>
@@ -51,7 +51,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
             v-model="store.datasetConfig.ignoreCapitals"
             :disabled="isGenericDataset"
             label="Ignore capital letters"
-            helper-text="Capital and lowercase letters are counted together"
+            helper-text="When on, capital and lowercase letters are counted together"
             @update:modelValue="updateConfig"
           />
           
@@ -59,7 +59,6 @@ watch(() => store.useGenericDataset, (isGeneric) => {
             v-model="store.datasetConfig.ignoreNumbers"
             :disabled="isGenericDataset"
             label="Ignore numbers"
-            helper-text="Numbers are removed from the dataset"
             @update:modelValue="updateConfig"
           />
           
@@ -67,7 +66,6 @@ watch(() => store.useGenericDataset, (isGeneric) => {
             v-model="store.datasetConfig.ignoreSymbols"
             :disabled="isGenericDataset"
             label="Ignore symbols and punctuation"
-            helper-text="Punctuation and symbols are removed from the dataset"
             @update:modelValue="updateConfig"
           />
           
@@ -75,7 +73,6 @@ watch(() => store.useGenericDataset, (isGeneric) => {
             v-model="store.datasetConfig.ignoreSpaces"
             :disabled="isGenericDataset"
             label="Ignore spaces"
-            helper-text="Whitespace is removed from the dataset"
             @update:modelValue="updateConfig"
           />
           <WarningMessage
