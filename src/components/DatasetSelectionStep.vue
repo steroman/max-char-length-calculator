@@ -102,8 +102,8 @@ const handlePrevious = () => {
               <HelperText 
                 text="A JSON file with the localization keys ([Link])"
                 :link="{
-                  url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-en.json',
-                  text: 'example'
+                  url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json',
+                  text: 'Example'
                 }"
               />
             </SelectionCard>
