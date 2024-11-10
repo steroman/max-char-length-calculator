@@ -1,4 +1,6 @@
 <script setup>
+import HelperText from './HelperText.vue';
+
 defineProps({
   modelValue: Boolean,
   disabled: Boolean,
@@ -24,8 +26,8 @@ defineEmits(['update:modelValue']);
       </div>
       <span v-if="label" class="ml-3 text-sm font-medium text-gray-700">{{ label }}</span>
     </label>
-    <div v-if="helperText" class="ml-[3.75rem] text-xs text-gray-500">
-      {{ helperText }}
+    <div v-if="helperText" class="ml-[3.75rem]">
+      <HelperText :text="helperText" />
     </div>
   </div>
 </template>
