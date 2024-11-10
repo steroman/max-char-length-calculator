@@ -9,6 +9,18 @@ const props = defineProps({
   highlight: {
     type: Boolean,
     default: false
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  helperText: {
+    type: String,
+    default: ''
+  },
+  accept: {
+    type: String,
+    default: '*'
   }
 });
 
@@ -20,13 +32,17 @@ const handleFileChange = async (event) => {
     const file = input.files[0];
     emit('update:modelValue', file);
     
-    try {
-      const text = await file.text();
-      const dataset = JSON.parse(text);
-      emit('file-loaded', dataset);
-    } catch (e) {
-      emit('file-loaded', null);
-      if (input.value) input.value = '';
+    if (file.name.endsWith('.json')) {
+      try {
+        const text = await file.text();
+        const dataset = JSON.parse(text);
+        emit('file-loaded', dataset);
+      } catch (e) {
+        emit('file-loaded', null);
+        if (input.value) input.value = '';
+      }
+    } else {
+      emit('file-loaded', file);
     }
   }
 };
@@ -35,14 +51,14 @@ const handleFileChange = async (event) => {
 <template>
   <div>
     <label class="block text-sm font-medium text-gray-700 mb-2">
-      Upload JSON file
+      {{ title }}
     </label>
-    <HelperText text="Supports flat and structured JSON" />
+    <HelperText v-if="helperText" :text="helperText" />
 
     <div class="mt-3" :class="{ 'p-2 rounded bg-red-50': highlight }">
       <input
         type="file"
-        accept=".json"
+        :accept="accept"
         @change="handleFileChange"
         :class="[
           'block w-full text-sm text-gray-500',

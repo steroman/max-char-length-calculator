@@ -65,7 +65,10 @@ const handleClick = () => {
             class="w-2 h-2 rounded-full bg-blue-500"
           ></div>
         </div>
-        <span class="font-medium">{{ title }}</span>
+        <div class="flex items-center">
+          <span class="font-medium">{{ title }}</span>
+          <slot name="title-extra"></slot>
+        </div>
       </div>
       
       <div class="ml-6 text-sm text-gray-600">
