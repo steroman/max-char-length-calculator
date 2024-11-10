@@ -6,6 +6,8 @@ import SelectionCard from './ui/SelectionCard.vue';
 import HelperText from './ui/HelperText.vue';
 import AutomaticWidthInput from './AutomaticWidthInput.vue';
 import ManualWidthInput from './ManualWidthInput.vue';
+import WarningMessage from './ui/WarningMessage.vue';
+import ExternalLink from './ui/ExternalLink.vue';
 import { useCalculatorStore } from '../stores/calculator';
 
 const store = useCalculatorStore();
@@ -49,7 +51,7 @@ const handlePrevious = () => {
               </span>
             </template>
             <HelperText 
-              text="By uploading a font file"
+              text="Upload a font file and calculate character widths automatically"
             />
           </SelectionCard>
 
@@ -63,6 +65,17 @@ const handlePrevious = () => {
             />
           </SelectionCard>
         </div>
+
+        <WarningMessage>
+          <p class="text-blue-800">
+            Widths may differ between your design tool and the automatic calculation (
+            <ExternalLink
+              href="https://github.com/steroman/max-char-length-calculator?tab=readme-ov-file#automatic-character-width-calculation"
+              class="text-blue-600 hover:text-blue-800"
+            >More info</ExternalLink>
+            )
+          </p>
+        </WarningMessage>
 
         <!-- Width Input Section -->
         <AutomaticWidthInput v-if="inputMethod === 'automatic'" />
