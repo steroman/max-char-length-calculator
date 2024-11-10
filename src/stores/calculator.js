@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { genericDataset } from '../data/genericDataset';
+import { incrementUsageCount } from '../firebase';
 
 const calculateAverageLength = (dataset) => {
   const lengths = Object.values(dataset).map(str => str.length);
@@ -54,11 +55,13 @@ export const useCalculatorStore = defineStore('calculator', {
       Object.assign(this, { ...initialState });
       this.usageCount = currentCount;
     },
-    nextStep() {
+    async nextStep() {
       this.currentStep++;
       if (this.currentStep === 7) {
-        this.usageCount++;
-        localStorage.setItem('calculatorUsageCount', this.usageCount.toString());
+        const newCount = await incrementUsageCount();
+        if (newCount !== null) {
+          this.usageCount = newCount;
+        }
         // Track completion event in GA4
         if (window.gtag) {
           window.gtag('event', 'calculation_complete', {

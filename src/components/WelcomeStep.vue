@@ -4,13 +4,16 @@ import WarningMessage from './ui/WarningMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
 import UsageCounter from './ui/UsageCounter.vue';
 import { useCalculatorStore } from '../stores/calculator';
+import { subscribeToUsageCount } from '../firebase';
+import { onMounted } from 'vue';
 
 const store = useCalculatorStore();
 
-// Initialize usage count from localStorage
-if (localStorage.getItem('calculatorUsageCount')) {
-  store.usageCount = parseInt(localStorage.getItem('calculatorUsageCount'), 10);
-}
+onMounted(() => {
+  subscribeToUsageCount((count) => {
+    store.usageCount = count;
+  });
+});
 
 const handleNext = () => {
   store.nextStep();
@@ -56,7 +59,6 @@ const handleNext = () => {
     <div class="mt-4">
       <WarningMessage message="None of your data is stored." class="text-center"/>
     </div>
-          <UsageCounter :count="store.usageCount" class="mb-4" />
-
+    <UsageCounter :count="store.usageCount" class="mb-4" />
   </div>
 </template>
