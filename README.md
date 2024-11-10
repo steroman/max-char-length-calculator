@@ -55,6 +55,7 @@ This application is built using modern web development tools:
 - **[Netlify](https://www.netlify.com/)** – Platform for deployment and hosting
 - **[EmailJS](https://www.emailjs.com/)** – For feedback form emails
 - **[OpenType.js](https://opentype.js.org/)** – For automatic character width calculation (more info)
+- **[Firebase](https://firebase.google.com/)** – For analytics and for the usage counter at the welcome steps
 
 ### Data sources
 
