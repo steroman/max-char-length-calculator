@@ -17,14 +17,23 @@ const handlePrevious = () => {
 };
 
 const updateConfig = () => {
-  store.processDataset(store.rawDataset);
+  if (!store.useGenericDataset) {
+    store.processDataset(store.rawDataset);
+  }
 };
 
 const isGenericDataset = computed(() => store.useGenericDataset);
 
-// Watch for changes in useGenericDataset and update reduceByTenPercent accordingly
+// Watch for changes in useGenericDataset and update config accordingly
 watch(() => store.useGenericDataset, (isGeneric) => {
   store.datasetConfig.reduceByTenPercent = isGeneric;
+  if (isGeneric) {
+    // Reset cleanup options when using generic dataset
+    store.datasetConfig.ignoreCapitals = false;
+    store.datasetConfig.ignoreNumbers = false;
+    store.datasetConfig.ignoreSymbols = false;
+    store.datasetConfig.ignoreSpaces = false;
+  }
 });
 </script>
 
@@ -34,58 +43,51 @@ watch(() => store.useGenericDataset, (isGeneric) => {
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-4">
         <h3 class="text-lg font-semibold mb-4">Cleanup options</h3>
-        <p class="text-gray-600">
+        <p class="mb-4">
           Turning on all the cleanup options gives more accurate results.
         </p>
         <div class="space-y-6">
-          <div>
-            <Toggle
-              v-model="store.datasetConfig.ignoreCapitals"
-              :disabled="isGenericDataset"
-              label="Ignore capital letters"
-              @update:modelValue="updateConfig"
-            />
-            <HelperText 
-              text="Recommended when using the generic dataset" 
-            />
-          </div>
-          <div>
-            <Toggle
-              v-model="store.datasetConfig.ignoreNumbers"
-              :disabled="isGenericDataset"
-              label="Ignore numbers"
-              @update:modelValue="updateConfig"
-            />
-          </div>
-          <div>
-            <Toggle
-              v-model="store.datasetConfig.ignoreSymbols"
-              :disabled="isGenericDataset"
-              label="Ignore symbols and punctuation"
-              @update:modelValue="updateConfig"
-            />
-          </div>
-          <div>
-            <Toggle
-              v-model="store.datasetConfig.ignoreSpaces"
-              :disabled="isGenericDataset"
-              label="Ignore spaces"
-              @update:modelValue="updateConfig"
-            />
-          </div>
+          <Toggle
+            v-model="store.datasetConfig.ignoreCapitals"
+            :disabled="isGenericDataset"
+            label="Ignore capital letters"
+            helper-text="Capital and lowercase letters are counted together"
+            @update:modelValue="updateConfig"
+          />
+          
+          <Toggle
+            v-model="store.datasetConfig.ignoreNumbers"
+            :disabled="isGenericDataset"
+            label="Ignore numbers"
+            helper-text="Numbers are removed from the dataset"
+            @update:modelValue="updateConfig"
+          />
+          
+          <Toggle
+            v-model="store.datasetConfig.ignoreSymbols"
+            :disabled="isGenericDataset"
+            label="Ignore symbols and punctuation"
+            helper-text="Punctuation and symbols are removed from the dataset"
+            @update:modelValue="updateConfig"
+          />
+          
+          <Toggle
+            v-model="store.datasetConfig.ignoreSpaces"
+            :disabled="isGenericDataset"
+            label="Ignore spaces"
+            helper-text="Whitespace is removed from the dataset"
+            @update:modelValue="updateConfig"
+          />
           <WarningMessage
           v-if="isGenericDataset"
           message="Cleanup options are unavailable when using a generic dataset because they are not applicable"
         />
-
           <div class="pt-4 border-t border-gray-200">
             <Toggle
               v-model="store.datasetConfig.reduceByTenPercent"
               label="Reduce the final results by 10%"
+              helper-text="To compensate for inaccuracy (Recommended when using the generic dataset)"
               @update:modelValue="updateConfig"
-            />
-            <HelperText 
-              text="To compensate for inaccuracy (Recommended when using the generic dataset)"
             />
           </div>
         </div>
