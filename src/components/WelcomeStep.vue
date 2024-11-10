@@ -36,10 +36,7 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>A JSON file with existing keys of the UI element (<ExternalLink
-          href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json"
-          class="inline-flex items-center text-blue-600 hover:text-blue-800"
-        >Example</ExternalLink>)</span>
+          <span>A JSON file with existing keys of the UI element</span>
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
@@ -47,7 +44,7 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>JSON files for the localization keys in other languages (<ExternalLink href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/ru-ru.json" class="inline-flex items-center text-blue-600 hover:text-blue-800">Example</ExternalLink>)</span>
+          <span>JSON files for the localization keys in other languages</span>
         </li>
       </ul>
       <p class="mb-4">No JSON files available? No problem, you can use our generic dataset.</p>
