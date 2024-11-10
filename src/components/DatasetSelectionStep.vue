@@ -84,29 +84,23 @@ const handlePrevious = () => {
               v-model="store.useGenericDataset"
               :value="true"
               title="Use generic data (English)"
-            >
-              <HelperText 
-                text="Based on letter frequency data from [Link]"
-                :link="{
-                  url: 'https://en.wikipedia.org/wiki/Letter_frequency',
-                  text: 'Wikipedia'
-                }"
-              />
-            </SelectionCard>
+              helperText="Based on letter frequency data from [Link]"
+              :link="{
+                url: 'https://en.wikipedia.org/wiki/Letter_frequency',
+                text: 'Wikipedia'
+              }"
+            />
 
             <SelectionCard
               v-model="store.useGenericDataset"
               :value="false"
               title="Upload custom data"
-            >
-              <HelperText 
-                text="A JSON file with the localization keys ([Link])"
-                :link="{
-                  url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json',
-                  text: 'Example'
-                }"
-              />
-            </SelectionCard>
+              helperText="A JSON file with the localization keys ([Link])"
+              :link="{
+                url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-en.json',
+                text: 'example'
+              }"
+            />
           </div>
 
           <!-- Language Selection -->
@@ -141,7 +135,7 @@ const handlePrevious = () => {
               v-model="currentFile"
               :highlight="highlightDataset"
               title="Upload JSON file"
-              helper-text="Supports flat and structured JSON"
+              helperText="Supports flat and structured JSON"
               accept=".json"
               @file-loaded="handleFileLoaded"
             />

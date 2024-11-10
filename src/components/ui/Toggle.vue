@@ -5,7 +5,10 @@ defineProps({
   modelValue: Boolean,
   disabled: Boolean,
   label: String,
-  helperText: String
+  helperText: {
+    type: String,
+    default: ''
+  }
 });
 
 defineEmits(['update:modelValue']);

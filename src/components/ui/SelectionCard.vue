@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import HelperText from './HelperText.vue';
 
 const props = defineProps({
   modelValue: {
@@ -17,6 +18,14 @@ const props = defineProps({
   title: {
     type: String,
     required: true
+  },
+  helperText: {
+    type: String,
+    default: ''
+  },
+  link: {
+    type: Object,
+    default: null
   }
 });
 
@@ -72,6 +81,7 @@ const handleClick = () => {
       </div>
       
       <div class="ml-6 text-sm text-gray-600">
+        <HelperText v-if="helperText" :text="helperText" :link="link" />
         <slot />
       </div>
     </div>

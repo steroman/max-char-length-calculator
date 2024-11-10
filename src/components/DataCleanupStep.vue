@@ -51,7 +51,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
             v-model="store.datasetConfig.ignoreCapitals"
             :disabled="isGenericDataset"
             label="Ignore capital letters"
-            helper-text="When on, capital and lowercase letters are counted together"
+            helperText="When on, capital and lowercase letters are counted together"
             @update:modelValue="updateConfig"
           />
           
@@ -83,7 +83,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
             <Toggle
               v-model="store.datasetConfig.reduceByTenPercent"
               label="Reduce the final results by 10%"
-              helper-text="To compensate for inaccuracy (Recommended when using the generic dataset)"
+              helperText="To compensate for inaccuracy (Recommended when using the generic dataset)"
               @update:modelValue="updateConfig"
             />
           </div>
