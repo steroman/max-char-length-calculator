@@ -134,12 +134,12 @@ const isGenericDataset = computed(() => store.useGenericDataset);
   <div class="max-w-2xl mx-auto p-6">
     <StepTitle title="Set text expansion (Localization)" />
     <div class="bg-white rounded-lg shadow-md p-6">
-      <p class="mb-4">The expansion rate determines how much the final character limit is adjusted to account for text expansion caused by localizing to other languages.</p>
       <div class="space-y-6">
         <div>
           <Toggle
             v-model="store.localization.enabled"
             label="Adjust for text expansion in other languages"
+            helperText="Using generic rates or custom data"
           />
         </div>
 
@@ -171,11 +171,11 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               :value="false"
               :selected="!store.localization.useGenericRates"
               :disabled="isGenericDataset"
-              title="Upload custom data"
+              title="Use custom data"
             >
-              <HelperText text="JSON files with the localization keys ([Link])" :link="{
+              <HelperText text="Rates are calculated from a JSON file with the localization keys ([Link])" :link="{
                 url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json',
-                text: 'example'
+                text: 'Sample'
               }" />
             </SelectionCard>
           </div>
@@ -202,7 +202,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
           <div v-else-if="!isGenericDataset" class="space-y-4">
             <h3 class="text-lg font-semibold">Languages</h3>
-            <HelperText text="The expansion rate used is that of the most expanding language." />
+            <HelperText text="We'll use the expansion rate of the most expanding language." />
             
             <div v-if="store.localization.languages.length > 0" class="mb-4">
               <h4 class="text-sm font-medium text-gray-700 mb-2">Added languages:</h4>

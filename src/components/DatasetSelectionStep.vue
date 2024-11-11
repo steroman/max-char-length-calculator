@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import StepTitle from './StepTitle.vue';
-import HelperText from './ui/HelperText.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import SelectionCard from './ui/SelectionCard.vue';
 import FileUpload from './ui/FileUpload.vue';
@@ -95,11 +94,11 @@ const handlePrevious = () => {
             <SelectionCard
               v-model="store.useGenericDataset"
               :value="false"
-              title="Upload custom data"
-              helperText="A JSON file with the localization keys ([Link])"
+              title="Use custom data"
+              helperText="Upload a JSON file with the localization keys ([Link])"
               :link="{
                 url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-en.json',
-                text: 'example'
+                text: 'Sample'
               }"
             />
           </div>
