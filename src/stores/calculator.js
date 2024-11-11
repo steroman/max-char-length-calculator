@@ -2,6 +2,17 @@ import { defineStore } from 'pinia';
 import { genericDataset } from '../data/genericDataset';
 import { incrementUsageCount } from '../firebase';
 
+// Define the steps array
+const steps = [
+  { id: 1, name: 'Welcome', isCountable: false },
+  { id: 2, name: 'Width Input', isCountable: true },
+  { id: 3, name: 'Dataset Selection', isCountable: true },
+  { id: 4, name: 'Data Cleanup', isCountable: true },
+  { id: 5, name: 'Character Width', isCountable: true },
+  { id: 6, name: 'Localization', isCountable: true },
+  { id: 7, name: 'Results', isCountable: false }
+];
+
 const calculateAverageLength = (dataset) => {
   const lengths = Object.values(dataset).map(str => str.length);
   return lengths.reduce((sum, len) => sum + len, 0) / lengths.length;
@@ -48,6 +59,17 @@ const initialState = {
 
 export const useCalculatorStore = defineStore('calculator', {
   state: () => ({ ...initialState }),
+
+  getters: {
+    steps: () => steps,
+    countableSteps: (state) => steps.filter(step => step.isCountable),
+    currentStepNumber: (state) => {
+      const currentStep = steps.find(s => s.id === state.currentStep);
+      if (!currentStep?.isCountable) return null;
+      return steps.filter(s => s.isCountable && s.id <= state.currentStep).length;
+    },
+    totalSteps: (state) => steps.filter(s => s.isCountable).length,
+  },
 
   actions: {
     reset() {

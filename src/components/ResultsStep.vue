@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
+import StepTitle from './StepTitle.vue';
 import { useCalculatorStore } from '../stores/calculator';
 import { languages } from '../data/languages';
+import CharacterTable from './CharacterTable.vue';
 
 const store = useCalculatorStore();
 const isCharacterSummaryOpen = ref(false);
@@ -10,11 +12,26 @@ const isCharacterSummaryOpen = ref(false);
 // Calculate results when component is mounted
 store.calculateResults();
 
+const tableHeaders = [
+  { key: 'displayChar', label: 'Character' },
+  { key: 'count', label: 'Count' },
+  { key: 'frequency', label: 'Frequency (%)' },
+  { key: 'width', label: 'Width (px)' }
+];
+
+const characterTableData = computed(() => {
+  return store.characterData.map(char => ({
+    ...char,
+    displayChar: char.char === ' ' ? '(space)' : char.char,
+    frequency: char.frequency.toFixed(2)
+  }));
+});
+
 const handlePrevious = () => {
   store.previousStep();
 };
 
-const handleRestart = () => {
+const handleNext = () => {
   store.reset();
   store.currentStep = 1;
 };
@@ -127,7 +144,7 @@ const toggleCharacterSummary = () => {
 
 <template>
   <div class="max-w-4xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Results</h2>
+    <StepTitle title="Results" />
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-8">
         <!-- Main Result -->
@@ -218,44 +235,25 @@ const toggleCharacterSummary = () => {
             </svg>
           </button>
           <div v-show="isCharacterSummaryOpen" class="border-t border-gray-200 p-4">
-            <div class="overflow-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Character</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Count</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Frequency (%)</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Width (px)</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="char in store.characterData" :key="char.char">
-                    <td class="px-4 py-2 text-sm">{{ char.char === ' ' ? '(space)' : char.char }}</td>
-                    <td class="px-4 py-2 text-sm">{{ formatCount(char.count) }}</td>
-                    <td class="px-4 py-2 text-sm">{{ char.frequency.toFixed(2) }}%</td>
-                    <td class="px-4 py-2 text-sm">{{ char.width }}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="border border-gray-200 rounded-lg">
+              <CharacterTable
+                :headers="tableHeaders"
+                :data="characterTableData"
+                max-height="60vh"
+              >
+                <template #cell-count="{ row }">
+                  {{ formatCount(row.count) }}
+                </template>
+              </CharacterTable>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="flex justify-between mt-8">
-        <button
-          @click="handlePrevious"
-          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-        >
-          Previous
-        </button>
-        <button
-          @click="handleRestart"
-          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Start again
-        </button>
-      </div>
+      <StepNavigation
+        @next="handleNext"
+        @previous="handlePrevious"
+      />
     </div>
   </div>
 </template>

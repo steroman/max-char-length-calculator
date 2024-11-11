@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import StepNavigation from './StepNavigation.vue';
+import StepTitle from './StepTitle.vue';
 import HelperText from './ui/HelperText.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import { useCalculatorStore } from '../stores/calculator';
@@ -62,7 +63,7 @@ const handleBlur = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Enter the UI element's width</h2>
+    <StepTitle title="Enter the UI element's width" />
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="mb-6">
         <label for="width" class="block text-sm font-medium text-gray-700 mb-2">

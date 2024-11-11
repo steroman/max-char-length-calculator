@@ -1,5 +1,6 @@
 <script setup>
 import StepNavigation from './StepNavigation.vue';
+import StepTitle from './StepTitle.vue';
 import WarningMessage from './ui/WarningMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
 import UsageCounter from './ui/UsageCounter.vue';
@@ -22,8 +23,7 @@ const handleNext = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-4">👋 Welcome</h1>
-
+    <StepTitle title="👋 Welcome" />
     <div class="bg-white rounded-lg shadow-md p-6">      
       <p class="mb-4">
         This tool calculates the maximum character length for a given UI element based on real data.
@@ -54,7 +54,7 @@ const handleNext = () => {
       <StepNavigation @next="handleNext" />
     </div>
     <div class="mt-4">
-      <WarningMessage message="🛡️ None of your data is stored." class="text-center"/>
+      <WarningMessage message="🛡️ None of your data is stored" class="text-center"/>
     </div>
     <UsageCounter :count="store.usageCount" class="mb-4" />
   </div>

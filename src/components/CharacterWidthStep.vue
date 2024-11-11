@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
+import StepTitle from './StepTitle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import SelectionCard from './ui/SelectionCard.vue';
 import HelperText from './ui/HelperText.vue';
@@ -35,7 +36,7 @@ const handlePrevious = () => {
 
 <template>
   <div class="max-w-4xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Enter character widths</h2>
+    <StepTitle title="Enter character widths" />
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="space-y-6">
         <!-- Input Method Selection -->

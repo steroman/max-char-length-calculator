@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import FileUpload from './ui/FileUpload.vue';
 import StepNavigation from './StepNavigation.vue';
+import StepTitle from './StepTitle.vue';
 import Toggle from './ui/Toggle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import WarningMessage from './ui/WarningMessage.vue';
@@ -131,7 +132,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Set text expansion (Localization)</h2>
+    <StepTitle title="Set text expansion (Localization)" />
     <div class="bg-white rounded-lg shadow-md p-6">
       <p class="mb-4">The expansion rate determines how much the final character limit is adjusted to account for text expansion caused by localizing to other languages.</p>
       <div class="space-y-6">
@@ -267,9 +268,12 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               </div>
 
               <div v-if="selectedLanguageCode">
-                <JsonFileUpload
+                <FileUpload
                   v-model="currentFile"
                   :highlight="highlightDataset"
+                  title="Upload JSON file"
+                  helperText="Supports flat and structured JSON"
+                  accept=".json"
                   @file-loaded="handleFileLoaded"
                 />
               </div>

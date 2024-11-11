@@ -6,6 +6,7 @@ import ErrorMessage from './ui/ErrorMessage.vue';
 import HelperText from './ui/HelperText.vue';
 import WarningMessage from './ui/WarningMessage.vue';
 import FileUpload from './ui/FileUpload.vue';
+import CharacterTable from './CharacterTable.vue';
 
 const store = useCalculatorStore();
 const fontSize = ref(16);
@@ -15,10 +16,19 @@ const fontInfo = ref(null);
 const highlightUpload = ref(false);
 const missingChars = ref(new Set());
 
-const characterSummary = computed(() => {
+const tableHeaders = [
+  { key: 'displayChar', label: 'Character' },
+  { key: 'count', label: 'Count' },
+  { key: 'frequency', label: 'Frequency (%)' },
+  { key: 'width', label: 'Width (Pixels)' }
+];
+
+const characterTableData = computed(() => {
   return store.characterData.map(char => ({
     ...char,
+    displayChar: char.char === ' ' ? '(space)' : char.char,
     frequency: char.frequency.toFixed(2),
+    isMissing: missingChars.value.has(char.char)
   }));
 });
 
@@ -89,8 +99,6 @@ const updateFontSize = () => {
 const formatCount = (count) => {
   return store.useGenericDataset ? '-' : count;
 };
-
-const isCharMissing = (char) => missingChars.value.has(char);
 </script>
 
 <template>
@@ -141,38 +149,27 @@ const isCharMissing = (char) => missingChars.value.has(char);
     />
 
     <!-- Character Width Table -->
-    <div v-if="currentFile" class="overflow-auto max-h-80">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Character</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Count</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Frequency (%)</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Width (Pixels)</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr 
-            v-for="char in characterSummary" 
-            :key="char.char"
-            :class="{ 'bg-yellow-50': isCharMissing(char.char) }"
+    <CharacterTable
+      v-if="currentFile"
+      :headers="tableHeaders"
+      :data="characterTableData"
+      max-height="60vh"
+    >
+      <template #cell-displayChar="{ row }">
+        <span :class="{ 'text-yellow-800': row.isMissing }">
+          {{ row.displayChar }}
+          <span 
+            v-if="row.isMissing"
+            class="ml-2 inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20"
           >
-            <td class="px-4 py-2 text-sm">
-              {{ char.char === ' ' ? '(space)' : char.char }}
-              <span 
-                v-if="isCharMissing(char.char)"
-                class="ml-2 inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20"
-              >
-                Missing
-              </span>
-            </td>
-            <td class="px-4 py-2 text-sm">{{ formatCount(char.count) }}</td>
-            <td class="px-4 py-2 text-sm">{{ char.frequency }}%</td>
-            <td class="px-4 py-2 text-sm">{{ char.width }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            Missing
+          </span>
+        </span>
+      </template>
+      <template #cell-count="{ row }">
+        {{ formatCount(row.count) }}
+      </template>
+    </CharacterTable>
 
     <ErrorMessage :message="error" />
   </div>
