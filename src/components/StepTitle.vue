@@ -19,11 +19,11 @@ const totalSteps = computed(() => store.totalSteps);
 </script>
 
 <template>
-  <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+  <div class="flex justify-between items-center mb-4">
     <h2 class="text-2xl font-bold">{{ title }}</h2>
     <div 
       v-if="showStepCount"
-      class="text-xs sm:text-sm text-gray-500 sm:ml-4 sm:border-l sm:border-gray-300 sm:pl-4"
+      class="text-xs sm:text-sm text-gray-500"
     >
       Step {{ currentStep }} of {{ totalSteps }}
     </div>
