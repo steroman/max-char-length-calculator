@@ -49,7 +49,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
         </p>
         <WarningMessage
             v-if="isGenericDataset"
-            message="Unavailable because those characters are not present in the generic dataset"
+            message="Unavailable because these characters are not in the generic dataset"
           />
         <div class="space-y-6">
           <Toggle
