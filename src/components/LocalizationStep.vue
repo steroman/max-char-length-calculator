@@ -61,7 +61,7 @@ const cancelAddingLanguage = () => {
 
 const handleFileLoaded = (dataset) => {
   if (dataset === null) {
-    error.value = 'Invalid JSON file. Please check the file format';
+    error.value = 'Invalid JSON file, try with a different format';
     highlightDataset.value = true;
     currentFile.value = null;
     return;
