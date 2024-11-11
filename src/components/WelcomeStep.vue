@@ -1,5 +1,6 @@
 <script setup>
 import StepNavigation from './StepNavigation.vue';
+import StepTitle from './StepTitle.vue';
 import WarningMessage from './ui/WarningMessage.vue';
 import ExternalLink from './ui/ExternalLink.vue';
 import UsageCounter from './ui/UsageCounter.vue';
@@ -22,8 +23,7 @@ const handleNext = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-4">👋 Welcome</h1>
-
+    <StepTitle title="👋 Welcome" />
     <div class="bg-white rounded-lg shadow-md p-6">      
       <p class="mb-4">
         This tool calculates the maximum character length for a given UI element based on real data.
@@ -36,10 +36,7 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>A JSON file with existing keys of the UI element (<ExternalLink
-          href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-us.json"
-          class="inline-flex items-center text-blue-600 hover:text-blue-800"
-        >Example</ExternalLink>)</span>
+          <span>A JSON file with existing keys of the UI element</span>
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
@@ -47,7 +44,7 @@ const handleNext = () => {
         </li>
         <li class="flex items-start">
           <span class="mr-2">✅</span>
-          <span>JSON files for the localization keys in other languages (<ExternalLink href="https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/ru-ru.json" class="inline-flex items-center text-blue-600 hover:text-blue-800">Example</ExternalLink>)</span>
+          <span>JSON files for the localization keys in other languages</span>
         </li>
       </ul>
       <p class="mb-4">No JSON files available? No problem, you can use our generic dataset.</p>
@@ -57,7 +54,7 @@ const handleNext = () => {
       <StepNavigation @next="handleNext" />
     </div>
     <div class="mt-4">
-      <WarningMessage message="None of your data is stored." class="text-center"/>
+      <WarningMessage message="🛡️ None of your data is stored" class="text-center"/>
     </div>
     <UsageCounter :count="store.usageCount" class="mb-4" />
   </div>

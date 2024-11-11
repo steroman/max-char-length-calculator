@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import StepNavigation from './StepNavigation.vue';
-import HelperText from './ui/HelperText.vue';
+import StepTitle from './StepTitle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import SelectionCard from './ui/SelectionCard.vue';
 import FileUpload from './ui/FileUpload.vue';
@@ -74,7 +74,7 @@ const handlePrevious = () => {
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Select a dataset</h2>
+    <StepTitle title="Select a dataset" />
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="mb-6">
         <div class="space-y-6">
@@ -84,29 +84,23 @@ const handlePrevious = () => {
               v-model="store.useGenericDataset"
               :value="true"
               title="Use generic data (English)"
-            >
-              <HelperText 
-                text="Based on letter frequency data from [Link]"
-                :link="{
-                  url: 'https://en.wikipedia.org/wiki/Letter_frequency',
-                  text: 'Wikipedia'
-                }"
-              />
-            </SelectionCard>
+              helperText="Based on letter frequency data from [Link]"
+              :link="{
+                url: 'https://en.wikipedia.org/wiki/Letter_frequency',
+                text: 'Wikipedia'
+              }"
+            />
 
             <SelectionCard
               v-model="store.useGenericDataset"
               :value="false"
-              title="Upload custom data"
-            >
-              <HelperText 
-                text="A JSON file with the localization keys ([Link])"
-                :link="{
-                  url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-en.json',
-                  text: 'example'
-                }"
-              />
-            </SelectionCard>
+              title="Use custom data"
+              helperText="Upload a JSON file with the localization keys ([Link])"
+              :link="{
+                url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-en.json',
+                text: 'Sample'
+              }"
+            />
           </div>
 
           <!-- Language Selection -->
@@ -141,7 +135,7 @@ const handlePrevious = () => {
               v-model="currentFile"
               :highlight="highlightDataset"
               title="Upload JSON file"
-              helper-text="Supports flat and structured JSON"
+              helperText="Supports flat and structured JSON"
               accept=".json"
               @file-loaded="handleFileLoaded"
             />

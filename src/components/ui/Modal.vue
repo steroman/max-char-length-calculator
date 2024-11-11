@@ -71,7 +71,7 @@ onUnmounted(() => {
             </div>
 
             <div class="sm:flex sm:items-start">
-              <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+              <div class="mt-3 text-left w-full">
                 <h3 class="text-lg font-semibold leading-6 text-gray-900">
                   {{ title }}
                 </h3>

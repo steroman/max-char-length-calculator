@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import FileUpload from './ui/FileUpload.vue';
 import StepNavigation from './StepNavigation.vue';
+import StepTitle from './StepTitle.vue';
 import Toggle from './ui/Toggle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
 import WarningMessage from './ui/WarningMessage.vue';
@@ -60,7 +61,7 @@ const cancelAddingLanguage = () => {
 
 const handleFileLoaded = (dataset) => {
   if (dataset === null) {
-    error.value = 'Invalid JSON file. Please check the file format';
+    error.value = 'Invalid JSON file, try with a different format';
     highlightDataset.value = true;
     currentFile.value = null;
     return;
@@ -93,7 +94,7 @@ const handleNext = () => {
   
   if (store.localization.enabled) {
     if (store.localization.useGenericRates && !store.localization.genericExpansionRate) {
-      error.value = 'Please select an expansion rate';
+      error.value = 'Select an expansion rate';
       highlightConfig.value = true;
       return;
     }
@@ -101,19 +102,19 @@ const handleNext = () => {
     if (!store.localization.useGenericRates) {
       if (isAddingLanguage.value) {
         if (!selectedLanguageCode.value) {
-          error.value = 'Please select a language';
+          error.value = 'Select a language';
           highlightLanguage.value = true;
           return;
         }
         if (!currentFile.value) {
-          error.value = 'Please complete adding the current language by uploading a JSON file';
+          error.value = 'Upload a JSON file';
           highlightDataset.value = true;
           return;
         }
       }
       
       if (store.localization.languages.length === 0) {
-        error.value = 'Please add at least one language';
+        error.value = 'Add at least one language';
         return;
       }
     }
@@ -131,14 +132,14 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
 <template>
   <div class="max-w-2xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Set text expansion (Localization)</h2>
+    <StepTitle title="Set text expansion (Localization)" />
     <div class="bg-white rounded-lg shadow-md p-6">
-      <p class="mb-4">The expansion rate determines how much the final character limit is adjusted to account for text expansion caused by localizing to other languages.</p>
       <div class="space-y-6">
         <div>
           <Toggle
             v-model="store.localization.enabled"
             label="Adjust for text expansion in other languages"
+            helperText="Using generic rates or custom data"
           />
         </div>
 
@@ -170,11 +171,11 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               :value="false"
               :selected="!store.localization.useGenericRates"
               :disabled="isGenericDataset"
-              title="Upload custom data"
+              title="Use custom data"
             >
-              <HelperText text="JSON files with the localization keys ([Link])" :link="{
+              <HelperText text="Rates are calculated from a JSON file with the localization keys ([Link])" :link="{
                 url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/it-it.json',
-                text: 'example'
+                text: 'Sample'
               }" />
             </SelectionCard>
           </div>
@@ -201,7 +202,7 @@ const isGenericDataset = computed(() => store.useGenericDataset);
 
           <div v-else-if="!isGenericDataset" class="space-y-4">
             <h3 class="text-lg font-semibold">Languages</h3>
-            <HelperText text="The expansion rate used is that of the most expanding language." />
+            <HelperText text="We'll use the expansion rate of the most expanding language." />
             
             <div v-if="store.localization.languages.length > 0" class="mb-4">
               <h4 class="text-sm font-medium text-gray-700 mb-2">Added languages:</h4>
@@ -267,9 +268,12 @@ const isGenericDataset = computed(() => store.useGenericDataset);
               </div>
 
               <div v-if="selectedLanguageCode">
-                <JsonFileUpload
+                <FileUpload
                   v-model="currentFile"
                   :highlight="highlightDataset"
+                  title="Upload JSON file"
+                  helperText="Supports flat and structured JSON"
+                  accept=".json"
                   @file-loaded="handleFileLoaded"
                 />
               </div>
