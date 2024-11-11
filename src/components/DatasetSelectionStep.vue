@@ -95,7 +95,7 @@ const handlePrevious = () => {
               v-model="store.useGenericDataset"
               :value="false"
               title="Use custom data"
-              helperText="Upload a JSON file with the localization keys ([Link])"
+              helperText="Read characters from a JSON file with the localization keys ([Link])"
               :link="{
                 url: 'https://raw.githubusercontent.com/steroman/max-char-length-calculator/refs/heads/main/src/assets/sample-files/en-en.json',
                 text: 'Sample'
