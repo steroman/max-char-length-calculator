@@ -78,7 +78,7 @@ watch(() => store.useGenericDataset, (isGeneric) => {
           />
           <WarningMessage
             v-if="isGenericDataset"
-            message="Cleanup options are unavailable when using a generic dataset because they are not applicable"
+            message="Unavailable because those characters are not present in the generic dataset"
           />
           <div class="pt-4 border-t border-gray-200">
             <Toggle
