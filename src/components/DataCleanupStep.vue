@@ -47,6 +47,10 @@ watch(() => store.useGenericDataset, (isGeneric) => {
         <p class="mb-4">
           Turning on all the cleanup options gives more accurate results.
         </p>
+        <WarningMessage
+            v-if="isGenericDataset"
+            message="Unavailable because those characters are not present in the generic dataset"
+          />
         <div class="space-y-6">
           <Toggle
             v-model="store.datasetConfig.ignoreCapitals"
@@ -75,10 +79,6 @@ watch(() => store.useGenericDataset, (isGeneric) => {
             :disabled="isGenericDataset"
             label="Ignore spaces"
             @update:modelValue="updateConfig"
-          />
-          <WarningMessage
-            v-if="isGenericDataset"
-            message="Unavailable because those characters are not present in the generic dataset"
           />
           <div class="pt-4 border-t border-gray-200">
             <Toggle
