@@ -94,7 +94,7 @@ const handleNext = () => {
   
   if (store.localization.enabled) {
     if (store.localization.useGenericRates && !store.localization.genericExpansionRate) {
-      error.value = 'Please select an expansion rate';
+      error.value = 'Select an expansion rate';
       highlightConfig.value = true;
       return;
     }
@@ -102,19 +102,19 @@ const handleNext = () => {
     if (!store.localization.useGenericRates) {
       if (isAddingLanguage.value) {
         if (!selectedLanguageCode.value) {
-          error.value = 'Please select a language';
+          error.value = 'Select a language';
           highlightLanguage.value = true;
           return;
         }
         if (!currentFile.value) {
-          error.value = 'Please complete adding the current language by uploading a JSON file';
+          error.value = 'Upload a JSON file';
           highlightDataset.value = true;
           return;
         }
       }
       
       if (store.localization.languages.length === 0) {
-        error.value = 'Please add at least one language';
+        error.value = 'Add at least one language';
         return;
       }
     }
