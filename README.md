@@ -1,4 +1,4 @@
-# 📐 Maximum character length calculator for UI elements
+# 📐 Maximum character length calculator for UI elements
 
 **Live Demo:** [https://max-char-length-calculator.netlify.app](https://max-char-length-calculator.netlify.app)
 
@@ -19,7 +19,8 @@ This tool calculates the maximum allowable character length for UI elements like
 ## Formula overview
 
 The calculation formula is:
-`MAX LENGTH = BUTTON WIDTH / AVERAGE CHARACTER WIDTH``
+
+> `MAX LENGTH = BUTTON WIDTH / AVERAGE CHARACTER WIDTH`
 
 Here, the **average character width** is derived by averaging the widths of all characters in a dataset, weighted by their frequency of use.
 
@@ -55,7 +56,7 @@ This application is built using modern web development tools:
 - **[Netlify](https://www.netlify.com/)** – Platform for deployment and hosting
 - **[EmailJS](https://www.emailjs.com/)** – For feedback form emails
 - **[OpenType.js](https://opentype.js.org/)** – For automatic character width calculation (more info)
-- **[Firebase](https://firebase.google.com/)** – For analytics and for the usage counter at the welcome steps
+- **[Firebase](https://firebase.google.com/)** – For analytics and for the usage counter at the welcome step
 
 ### Data sources
 
@@ -87,15 +88,12 @@ For example, if:
 
 Then:
 
-- pixelsPerUnit = 16/1000 = 0.016
-- Final width = 500 * 0.016 = 8 pixels
+1. Calculate pixels per unit: `16/1000 = 0.016`
+2. Calculate raw width: `500 * 0.016 = 8`
+3. Apply safety factor: `8 * 1.05 = 8.4` (5% increase to account for rendering differences)
+4. Round up to nearest pixel: `ceil(8.4) = 9`
 
-#### Additional factors
-
-- We apply a 1.05 multiplier to account for font rendering differences
-- The result is rounded to the nearest pixel since screens can't display partial pixels
-- Some fonts include extra spacing in their metrics for better rendering
-- This calculation gives us the actual space a character occupies in the specified font size, including its sidebearings (spacing on either side of the visible glyph).
+The final width is always rounded up to ensure text has enough space to render properly. This calculation gives us the actual space a character occupies in the specified font size, including its sidebearings (spacing on either side of the visible glyph).
 
 ## Usage
 
@@ -131,4 +129,4 @@ Thank you for using the Max Character Length Calculator! We hope this tool makes
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).</script>

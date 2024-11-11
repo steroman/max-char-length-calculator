@@ -52,7 +52,7 @@ const calculateWidth = (font, char, size) => {
   const pixelsPerUnit = size / font.unitsPerEm;
   const width = glyph.advanceWidth;
   const pixelWidth = width * pixelsPerUnit * 1.05;
-  return Math.round(pixelWidth);
+  return Math.ceil(pixelWidth); // Changed from Math.round to Math.ceil
 };
 
 const handleFontLoaded = async (file) => {
