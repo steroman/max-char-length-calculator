@@ -139,14 +139,14 @@ const isGenericDataset = computed(() => store.useGenericDataset);
           <Toggle
             v-model="store.localization.enabled"
             label="Adjust for text expansion in other languages"
-            helperText="Using generic rates or custom data"
+            helperText="Use generic expansion rates or calculate it from your data"
           />
         </div>
 
         <template v-if="store.localization.enabled">
           <WarningMessage
             v-if="isGenericDataset"
-            message="Only generic expansion rates are available when using the generic dataset."
+            message="Only generic expansion rates are available when using the generic dataset"
           />
 
           <!-- Dataset Type Selection Cards -->
