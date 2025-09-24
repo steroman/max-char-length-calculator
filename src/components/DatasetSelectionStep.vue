@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import StepNavigation from './StepNavigation.vue';
 import StepTitle from './StepTitle.vue';
 import ErrorMessage from './ui/ErrorMessage.vue';
@@ -14,6 +14,11 @@ const currentFile = ref(null);
 const error = ref('');
 const highlightLanguage = ref(false);
 const highlightDataset = ref(false);
+
+// Ensure languages are always sorted alphabetically
+const sortedLanguages = computed(() => {
+  return [...languages].sort((a, b) => a.name.localeCompare(b.name));
+});
 
 watch(() => store.useGenericDataset, (newValue) => {
   store.datasetConfig.reduceByTenPercent = newValue;
@@ -127,7 +132,7 @@ const handlePrevious = () => {
               >
                 {{ lang.name }}
               </option>
-            </select>
+                  v-for="lang in sortedLanguages"
           </div>
 
           <div v-if="!store.useGenericDataset && store.selectedLanguageCode">
