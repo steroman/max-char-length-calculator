@@ -225,12 +225,17 @@ jobs:
       - name: Create branch, commit, and open PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.meta.outputs.issue_number }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
+          set -euo pipefail
+
           git config user.name  "chatgpt-bot"
           git config user.email "bot@users.noreply.github.com"
 
-          BRANCH="chatgpt/issue-${{ steps.meta.outputs.issue_number }}-$(date +%Y%m%d%H%M%S)"
+          BRANCH="chatgpt/issue-${ISSUE_NUMBER}-$(date +%Y%m%d%H%M%S)"
           git checkout -b "$BRANCH"
+
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes produced by the model. Exiting."
             exit 1
@@ -240,11 +245,21 @@ jobs:
           git commit -m "$(cat commit_message.txt)"
           git push --set-upstream origin "$BRANCH"
 
-          # Open PR via API (you can swap for peter-evans/create-pull-request if you prefer)
           REPO="${{ github.repository }}"
           TITLE=$(cat pr_title.txt)
           BODY=$(cat pr_body.txt | jq -Rs .)
 
           jq -n --arg title "$TITLE" \
                 --arg head  "$BRANCH" \
-                --arg base  "${{ github.event.repositor
+                --arg base  "$DEFAULT_BRANCH" \
+                --argjson body "$BODY" \
+                '{title:$title, head:$head, base:$base, body:$body}' > pr.json
+
+          curl -s -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -d @pr.json \
+            "https://api.github.com/repos/$REPO/pulls" > pr_resp.json
+
+          echo "PR response:"
+          cat pr_resp.json
