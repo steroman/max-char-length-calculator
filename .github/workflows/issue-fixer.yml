@@ -1,0 +1,250 @@
+name: Issue fixer by ChatGPT
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write        # to push branch/commits
+  pull-requests: write   # to open PRs
+  issues: write          # to comment back on the issue if needed
+
+jobs:
+  fix:
+    if: >
+      github.event.issue.pull_request == null && 
+      startsWith(github.event.comment.body, '/fix-with-chatgpt')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Guard: allowlist who can trigger (optional)
+        if: ${{ !contains('["your-gh-username","teammate1"]', format('"{}"', github.event.comment.user.login)) }}
+        run: |
+          echo "User not allowed to run this command."
+          exit 1
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract context
+        id: meta
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER=$(jq -r '.issue.number' < "$GITHUB_EVENT_PATH")
+          REPO="${{ github.repository }}"
+          # Get issue title/body
+          ISSUE_JSON=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER")
+          TITLE=$(echo "$ISSUE_JSON" | jq -r '.title')
+          BODY=$(echo "$ISSUE_JSON" | jq -r '.body')
+          CMD=$(jq -r '.comment.body' < "$GITHUB_EVENT_PATH")
+
+          # Parse optional flags from command
+          # e.g. /fix-with-chatgpt --scope path1 path2 --max-files 40
+          SCOPE=$(echo "$CMD" | sed -n 's/.*--scope[[:space:]]\+//p' | awk '{print $0}')
+          MAX_FILES=$(echo "$CMD" | grep -oE -- '--max-files[[:space:]]+[0-9]+' | awk '{print $2}')
+          [ -z "$MAX_FILES" ] && MAX_FILES=30
+
+          echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "title<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$TITLE" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "body<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$BODY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "scope<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$SCOPE" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "max_files=$MAX_FILES" >> "$GITHUB_OUTPUT"
+
+      - name: Gather candidate files (keyword search)
+        id: gather
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y ripgrep
+          # Build search terms from issue title/body (first 10 distinct words, simple heuristic)
+          TERMS=$(printf "%s\n%s\n" "${{ steps.meta.outputs.title }}" "${{ steps.meta.outputs.body }}" \
+            | tr '[:space:]/()[]{}:,.#\"' '\n' \
+            | grep -E '.{3,}' | tr '[:upper:]' '[:lower:]' | sort -u | head -n 10 | tr '\n' ' ')
+
+          # Limit to scope paths if provided (space-separated)
+          if [ -n "${{ steps.meta.outputs.scope }}" ]; then
+            echo "${{ steps.meta.outputs.scope }}" | tr ' ' '\n' | sed '/^$/d' > scope.txt
+          else
+            git ls-files > scope.txt
+          fi
+
+          # Score files by count of term matches (very simple heuristic)
+          > candidates.tsv
+          while read -r f; do
+            [ -f "$f" ] || continue
+            # Skip huge or generated files
+            BYTES=$(wc -c < "$f")
+            if [ "$BYTES" -gt 200000 ]; then continue; fi
+            COUNT=0
+            for t in $TERMS; do
+              HITS=$(rg -NIc --fixed-strings "$t" "$f" 2>/dev/null || true)
+              [ -z "$HITS" ] && HITS=0
+              COUNT=$((COUNT + HITS))
+            done
+            if [ "$COUNT" -gt 0 ]; then
+              printf "%08d\t%s\n" "$COUNT" "$f" >> candidates.tsv
+            fi
+          done < scope.txt
+
+          sort -r candidates.tsv | head -n ${{ steps.meta.outputs.max_files }} | cut -f2 > candidates.txt
+          echo "Selected $(wc -l < candidates.txt) files:"
+          cat candidates.txt
+
+      - name: Build context bundle for the model
+        run: |
+          mkdir ctx
+          i=0
+          while read -r f; do
+            i=$((i+1))
+            echo "=== FILE: $f ===" >> ctx/bundle.txt
+            # Trim very long files to keep prompts manageable
+            head -n 500 "$f" >> ctx/bundle.txt || true
+            echo "" >> ctx/bundle.txt
+          done < candidates.txt
+          # Always include package/config files if present
+          for f in package.json package-lock.json pyproject.toml poetry.lock requirements.txt tsconfig.json .eslintrc.* .prettierrc*; do
+            [ -f "$f" ] && { echo "=== FILE: $f ===" >> ctx/bundle.txt; head -n 500 "$f" >> ctx/bundle.txt; echo >> ctx/bundle.txt; }
+          done
+          echo "Context size (bytes): $(wc -c < ctx/bundle.txt)"
+
+      - name: Generate edits with OpenAI
+        id: ai
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python - << 'PY'
+          import json, os, textwrap, pathlib
+
+          issue_title = """${{ steps.meta.outputs.title }}"""
+          issue_body  = """${{ steps.meta.outputs.body }}"""
+          with open("ctx/bundle.txt","r",encoding="utf-8",errors="replace") as f:
+            bundle = f.read()
+
+          system = (
+            "You are a cautious software engineer. "
+            "You fix the described issue by proposing minimal, safe edits. "
+            "Never invent unrelated features. Prefer small, localized changes and add tests when practical."
+          )
+
+          # Ask for a STRICT JSON with file edits (full-file replacements),
+          # plus a clear commit message and PR title/body.
+          user = f"""
+          ISSUE TITLE:
+          {issue_title}
+
+          ISSUE BODY:
+          {issue_body}
+
+          REPOSITORY CONTEXT (truncated file previews):
+          {bundle}
+
+          TASK:
+          - Propose a set of concrete file edits that fix the issue.
+          - Return STRICT JSON with this schema (and nothing else):
+            {{
+              "commit_message": "short, imperative",
+              "pr_title": "concise PR title",
+              "pr_body": "multi-line body explaining the fix and any risks; include 'Closes #{${{ steps.meta.outputs.issue_number }}}'",
+              "edits": [
+                {{"path": "relative/path.ext", "contents": "ENTIRE NEW FILE CONTENTS"}},
+                ...
+              ]
+            }}
+          RULES:
+          - Each edit must include the FULL updated contents of that file.
+          - Keep changes minimal and self-contained.
+          - If tests are needed, include edits to test files too.
+          - Do not include backticks, markdown, or commentary outside the JSON.
+          - Only modify files that plausibly relate to the issue.
+          """
+
+          req = {
+            "model": "gpt-5",  # adjust as needed
+            "input": [
+              {"role":"system","content": system},
+              {"role":"user","content": user}
+            ],
+            "temperature": 0.2,
+          }
+
+          import urllib.request, ssl
+          data = json.dumps(req).encode("utf-8")
+          req_obj = urllib.request.Request(
+              "https://api.openai.com/v1/responses",
+              data=data,
+              headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}",
+                       "Content-Type": "application/json"}
+          )
+          # Some runners have strict SSL; make sure we use default context
+          with urllib.request.urlopen(req_obj, context=ssl.create_default_context()) as r:
+              out = r.read().decode("utf-8")
+          resp = json.loads(out)
+
+          # Try Responses API shape first, fallback to Chat Completions-like shape
+          try:
+            text = resp["output"][0]["content"][0]["text"]
+          except Exception:
+            text = resp.get("choices",[{}])[0].get("message",{}).get("content","")
+
+          # Parse STRICT JSON
+          try:
+            payload = json.loads(text)
+          except Exception as e:
+            raise SystemExit("Model did not return valid JSON. Stopping.\n" + text[:1000])
+
+          # Write files
+          edits = payload.get("edits",[])
+          for e in edits:
+            path = pathlib.Path(e["path"])
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with open(path, "w", encoding="utf-8") as wf:
+              wf.write(e["contents"])
+
+          # Save metadata for next steps
+          with open("commit_message.txt","w") as f: f.write(payload.get("commit_message","Fix issue"))
+          with open("pr_title.txt","w") as f: f.write(payload.get("pr_title","Fix issue"))
+          with open("pr_body_raw.txt","w") as f: f.write(payload.get("pr_body","Closes #${{ steps.meta.outputs.issue_number }}"))
+
+          # Ensure the PR body includes the closes reference
+          prb = open("pr_body_raw.txt","r").read()
+          if f"Closes #${{ steps.meta.outputs.issue_number }}" not in prb and f"Closes #${{ steps.meta.outputs.issue_number }}".replace("Closes ","Fixes ") not in prb:
+            prb += f"\n\nCloses #${{ steps.meta.outputs.issue_number }}"
+          open("pr_body.txt","w").write(prb)
+          PY
+
+      - name: Create branch, commit, and open PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name  "chatgpt-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+          BRANCH="chatgpt/issue-${{ steps.meta.outputs.issue_number }}-$(date +%Y%m%d%H%M%S)"
+          git checkout -b "$BRANCH"
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes produced by the model. Exiting."
+            exit 1
+          fi
+
+          git add -A
+          git commit -m "$(cat commit_message.txt)"
+          git push --set-upstream origin "$BRANCH"
+
+          # Open PR via API (you can swap for peter-evans/create-pull-request if you prefer)
+          REPO="${{ github.repository }}"
+          TITLE=$(cat pr_title.txt)
+          BODY=$(cat pr_body.txt | jq -Rs .)
+
+          jq -n --arg title "$TITLE" \
+                --arg head  "$BRANCH" \
+                --arg base  "${{ github.event.repositor
