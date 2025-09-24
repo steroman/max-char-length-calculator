@@ -16,12 +16,13 @@ jobs:
       startsWith(github.event.comment.body, '/fix-with-chatgpt')
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Guard: allowlist who can trigger (optional)
-        if: ${{ !contains('["your-gh-username","teammate1"]', format('"{}"', github.event.comment.user.login)) }}
+steps:
+      - name: "Guard: allowlist who can trigger (optional)"
+        if: ${{ !contains(fromJSON('["steroman"]'), github.event.comment.user.login) }}
         run: |
           echo "User not allowed to run this command."
           exit 1
+
 
       - name: Check out repository
         uses: actions/checkout@v4
