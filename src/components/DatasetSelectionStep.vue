@@ -126,13 +126,13 @@ const handlePrevious = () => {
             >
               <option value="">Select a language</option>
               <option
-                v-for="lang in languages"
+                v-for="lang in sortedLanguages"
                 :key="lang.code"
                 :value="lang.code"
               >
                 {{ lang.name }}
               </option>
-                  v-for="lang in sortedLanguages"
+            </select>
           </div>
 
           <div v-if="!store.useGenericDataset && store.selectedLanguageCode">
