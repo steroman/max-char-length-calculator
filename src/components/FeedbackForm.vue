@@ -52,7 +52,7 @@ const handleSubmit = async () => {
     };
 
     await emailjs.send(
-      'service_4wa1mlr',
+      'service_436asyt',
       'template_zolqgvk',
       templateParams,
       'wDRAXj5G6LhnaXLr3'
