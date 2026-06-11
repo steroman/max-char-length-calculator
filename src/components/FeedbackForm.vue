@@ -52,10 +52,10 @@ const handleSubmit = async () => {
     };
 
     await emailjs.send(
-      'import.meta.env.VITE_EMAIL_JS_SERVICE_ID',
-      'import.meta.env.VITE_EMAIL_JS_TEMPLATE_ID',
+      import.meta.env.VITE_EMAIL_JS_SERVICE_ID,
+      import.meta.env.VITE_EMAIL_JS_TEMPLATE_ID,
       templateParams,
-      'import.meta.env.VITE_EMAIL_JS_PUBLIC_KEY'
+      import.meta.env.VITE_EMAIL_JS_PUBLIC_KEY
     );
 
     success.value = true;
