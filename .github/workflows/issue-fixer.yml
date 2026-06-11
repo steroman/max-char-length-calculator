@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: "Guard: allowlist who can trigger (optional)"
-        if: ${{ !contains('["your-gh-username","teammate1"]', format('"{}"', github.event.comment.user.login)) }}
+        if: ${{ !contains('["steroman"]', format('"{}"', github.event.comment.user.login)) }}
         run: |
           echo "User not allowed to run this command."
           exit 1
